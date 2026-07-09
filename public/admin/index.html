@@ -5,21 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OneMJJ 后台管理</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f6f8fb;color:#111827}.wrap{max-width:1180px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}.brand h1{margin:0;font-size:34px;letter-spacing:-1px}.brand p{margin:6px 0 0;color:#667085}.card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:18px;box-shadow:0 18px 50px rgba(20,30,60,.08)}input,textarea,select{width:100%;border:1px solid #d0d5dd;border-radius:12px;padding:11px 12px;font:inherit;background:white}textarea{min-height:88px;resize:vertical}label{font-size:13px;color:#475467;display:grid;gap:7px}button{border:0;border-radius:999px;padding:11px 15px;font:inherit;cursor:pointer;background:#111827;color:white}.ghost{background:#f2f4f7;color:#111827}.danger{background:#fee2e2;color:#991b1b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tab{background:#eef2ff;color:#3730a3}.tab.active{background:#111827;color:white}.list{display:grid;gap:10px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #edf0f5;border-radius:16px;padding:12px}.row b{display:block}.row small{color:#667085}.form{display:grid;gap:12px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.hidden{display:none!important}.status{padding:10px 12px;border-radius:12px;background:#ecfdf3;color:#067647}.err{background:#fef3f2;color:#b42318}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.split{display:grid;grid-template-columns:360px 1fr;gap:16px}.top-actions{display:flex;gap:10px;flex-wrap:wrap}@media(max-width:850px){.split,.grid{grid-template-columns:1fr}header{display:block}.top-actions{margin-top:12px}}
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0,#dff3ff 0,transparent 32%),radial-gradient(circle at 92% 8%,#ffe6d5 0,transparent 34%),linear-gradient(135deg,#f7fbff,#fff8ef 50%,#f7f2ff);color:#111827;min-height:100vh}.wrap{max-width:1180px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}.brand h1{margin:0;font-size:34px;letter-spacing:-1px}.brand p{margin:6px 0 0;color:#667085}.card{background:rgba(255,255,255,.82);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.9);border-radius:24px;padding:20px;box-shadow:0 22px 70px rgba(20,30,60,.12)}input,textarea,select{width:100%;border:1px solid #d0d5dd;border-radius:14px;padding:12px 13px;font:inherit;background:white}textarea{min-height:88px;resize:vertical}label{font-size:13px;color:#475467;display:grid;gap:7px}button{border:0;border-radius:999px;padding:11px 15px;font:inherit;cursor:pointer;background:#111827;color:white}.ghost{background:#f2f4f7;color:#111827}.danger{background:#fee2e2;color:#991b1b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tab{background:#eef2ff;color:#3730a3}.tab.active{background:#111827;color:white}.list{display:grid;gap:10px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #edf0f5;background:white;border-radius:16px;padding:12px}.row b{display:block}.row small{color:#667085;overflow-wrap:anywhere}.form{display:grid;gap:12px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.hidden{display:none!important}.status{padding:10px 12px;border-radius:12px;background:#ecfdf3;color:#067647}.err{background:#fef3f2;color:#b42318}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.split{display:grid;grid-template-columns:360px 1fr;gap:16px}.top-actions{display:flex;gap:10px;flex-wrap:wrap}.login-shell{min-height:calc(100vh - 44px);display:grid;place-items:center}.login-card{width:min(460px,100%);padding:28px}.login-logo{width:54px;height:54px;border-radius:18px;background:#111827;color:white;display:grid;place-items:center;font-size:28px;margin-bottom:18px}.login-card h1{font-size:34px;letter-spacing:-1px;margin:0 0 8px}.login-card p{color:#667085;margin:0 0 20px;line-height:1.55}.login-form{display:grid;gap:13px}.login-form button{width:100%;padding:13px 16px}.hint{font-size:12px;color:#98a2b3;line-height:1.5}.save-float{position:sticky;top:12px;z-index:2}@media(max-width:850px){.wrap{padding:14px}.split,.grid{grid-template-columns:1fr}header{display:block}.top-actions{margin-top:12px}.row{align-items:flex-start;flex-direction:column}.row>div:last-child{display:flex;gap:8px;width:100%}.row button{flex:1}.tabs{overflow:auto;flex-wrap:nowrap;padding-bottom:4px}.tab{white-space:nowrap}.card{padding:16px;border-radius:20px}.brand h1{font-size:28px}.login-shell{align-items:start;padding-top:28px}.login-card{padding:22px}}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div class="brand"><h1>OneMJJ 后台</h1><p>登录后自己增删改首页工具、脚本和小报内容。</p></div>
-      <div class="top-actions"><a href="/" class="ghost" style="text-decoration:none;padding:11px 15px;border-radius:999px">返回前台</a><button id="saveBtn">保存发布</button></div>
-    </header>
-    <section id="login" class="card">
-      <h2>登录</h2>
-      <div class="grid"><label>管理密码<input id="password" type="password" placeholder="输入管理密码" /></label><label>&nbsp;<button id="loginBtn">登录</button></label></div>
-      <p id="loginMsg"></p>
+    <section id="login" class="login-shell">
+      <div class="card login-card">
+        <div class="login-logo">🛠️</div>
+        <h1>OneMJJ 后台</h1>
+        <p>登录后可以自己增删改工具卡片、脚本速查和小报内容。保存后前台立即生效。</p>
+        <div class="login-form">
+          <label>用户名<input id="username" autocomplete="username" placeholder="请输入用户名" /></label>
+          <label>密码<input id="password" type="password" autocomplete="current-password" placeholder="请输入密码" /></label>
+          <button id="loginBtn">登录后台</button>
+          <p class="hint">提示：后台只保存配置数据，不会执行脚本命令。</p>
+          <p id="loginMsg"></p>
+        </div>
+      </div>
     </section>
     <section id="admin" class="hidden">
+      <header>
+        <div class="brand"><h1>OneMJJ 后台</h1><p>编辑首页工具、脚本和小报内容。</p></div>
+        <div class="top-actions"><a href="/" class="ghost" style="text-decoration:none;padding:11px 15px;border-radius:999px">返回前台</a><button id="saveBtn" class="save-float">保存发布</button></div>
+      </header>
       <div class="tabs"><button class="tab active" data-tab="tools">工具卡片</button><button class="tab" data-tab="scripts">脚本速查</button><button class="tab" data-tab="notes">小报/Wiki</button><button class="tab" data-tab="json">高级 JSON</button></div>
       <p id="msg"></p>
       <div id="toolsPanel" class="split"><div class="card"><h2>工具列表</h2><div id="toolList" class="list"></div><div class="actions"><button id="newTool">新增工具</button></div></div><div class="card"><h2>编辑工具</h2><div class="form" id="toolForm"></div></div></div>
@@ -29,14 +38,14 @@
     </section>
   </div>
 <script>
-let data=null, password='', currentTool=0;
+let data=null, username='', password='', currentTool=0;
 const $=s=>document.querySelector(s); const $$=s=>Array.from(document.querySelectorAll(s));
 function msg(t,err=false){$('#msg').textContent=t; $('#msg').className=t?(err?'status err':'status'):''}
 function loginMsg(t,err=false){$('#loginMsg').textContent=t; $('#loginMsg').className=t?(err?'status err':'status'):''}
-async function api(action, payload={}){const r=await fetch('/api/admin',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password,action,...payload})}); const j=await r.json().catch(()=>({ok:false,error:'BAD_RESPONSE'})); if(!r.ok||!j.ok) throw new Error(j.error||'请求失败'); return j;}
+async function api(action, payload={}){const r=await fetch('/api/admin',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({username,password,action,...payload})}); const j=await r.json().catch(()=>({ok:false,error:'BAD_RESPONSE'})); if(!r.ok||!j.ok) throw new Error(j.error||'请求失败'); return j;}
 async function load(){const r=await fetch('/api/data',{cache:'no-store'}); data=await r.json(); $('#jsonEdit').value=JSON.stringify(data,null,2); renderAll();}
 function showAdmin(){ $('#login').classList.add('hidden'); $('#admin').classList.remove('hidden'); }
-async function doLogin(){password=$('#password').value||password; try{await api('login'); localStorage.setItem('onemjj_admin_password',password); showAdmin(); await load();}catch(e){loginMsg('密码不对或后台未配置：'+e.message,true)}}
+async function doLogin(){username=$('#username').value.trim(); password=$('#password').value; try{await api('login'); showAdmin(); await load();}catch(e){loginMsg('用户名或密码不对：'+e.message,true)}}
 function input(id,label,value='',type='text'){return `<label>${label}<input id="${id}" type="${type}" value="${String(value||'').replaceAll('"','&quot;')}" /></label>`}
 function textarea(id,label,value=''){return `<label>${label}<textarea id="${id}">${String(value||'').replaceAll('<','&lt;')}</textarea></label>`}
 function collectLines(v){return v.split('\n').map(x=>x.trim()).filter(Boolean)}
@@ -54,7 +63,7 @@ window.editNote=i=>{const n=data.notes[i]; const tag=prompt('标签',n.tag); if(
 window.delNote=i=>{if(confirm('删除卡片？')){data.notes.splice(i,1); syncJson(); renderNotes();}}
 function syncJson(){ $('#jsonEdit').value=JSON.stringify(data,null,2) }
 function renderAll(){renderTools(); renderScripts(); renderNotes(); syncJson()}
-$('#loginBtn').onclick=doLogin; $('#password').value=''; localStorage.removeItem('onemjj_admin_password');
+$('#loginBtn').onclick=doLogin; $('#password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()}); $('#username').addEventListener('keydown',e=>{if(e.key==='Enter')$('#password').focus()});
 $$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); ['tools','scripts','notes','json'].forEach(id=>$('#'+id+'Panel').classList.toggle('hidden',b.dataset.tab!==id));});
 $('#newTool').onclick=()=>{data.tools.push({id:'tool-'+Date.now(),name:'新工具',desc:'说明',icon:'🔗',category:'Other',body:'详情说明',links:[]}); currentTool=data.tools.length-1; syncJson(); renderTools();}
 $('#newScript').onclick=()=>{data.scripts.push({title:'新脚本',cmd:'echo hello'}); syncJson(); renderScripts();}
