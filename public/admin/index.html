@@ -29,7 +29,7 @@
     </section>
   </div>
 <script>
-let data=null, password=localStorage.getItem('onemjj_admin_password')||'', currentTool=0;
+let data=null, password='', currentTool=0;
 const $=s=>document.querySelector(s); const $$=s=>Array.from(document.querySelectorAll(s));
 function msg(t,err=false){$('#msg').textContent=t; $('#msg').className=t?(err?'status err':'status'):''}
 function loginMsg(t,err=false){$('#loginMsg').textContent=t; $('#loginMsg').className=t?(err?'status err':'status'):''}
@@ -54,7 +54,7 @@ window.editNote=i=>{const n=data.notes[i]; const tag=prompt('标签',n.tag); if(
 window.delNote=i=>{if(confirm('删除卡片？')){data.notes.splice(i,1); syncJson(); renderNotes();}}
 function syncJson(){ $('#jsonEdit').value=JSON.stringify(data,null,2) }
 function renderAll(){renderTools(); renderScripts(); renderNotes(); syncJson()}
-$('#loginBtn').onclick=doLogin; $('#password').value=password; if(password) doLogin();
+$('#loginBtn').onclick=doLogin; $('#password').value=''; localStorage.removeItem('onemjj_admin_password');
 $$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); ['tools','scripts','notes','json'].forEach(id=>$('#'+id+'Panel').classList.toggle('hidden',b.dataset.tab!==id));});
 $('#newTool').onclick=()=>{data.tools.push({id:'tool-'+Date.now(),name:'新工具',desc:'说明',icon:'🔗',category:'Other',body:'详情说明',links:[]}); currentTool=data.tools.length-1; syncJson(); renderTools();}
 $('#newScript').onclick=()=>{data.scripts.push({title:'新脚本',cmd:'echo hello'}); syncJson(); renderScripts();}
