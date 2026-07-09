@@ -1,3 +1,7 @@
 name = "onemjj"
 compatibility_date = "2026-07-09"
 pages_build_output_dir = "dist"
+
+[[kv_namespaces]]
+binding = "ONEMJJ_CONFIG"
+id = "823bd545775e44f6ae2ebeb758ef4953"
