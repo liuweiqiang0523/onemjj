@@ -64,7 +64,7 @@
       "desc": "刷流 / 整理 / 115 / Emby",
       "icon": "🎞️",
       "category": "Media",
-      "body": "媒体自动化和 PT 常用入口，后续可以接你的 msgo 流程备忘。",
+      "body": "媒体自动化、下载整理和播放服务的常用文档入口。公开页面只放通用资料，不暴露私人服务地址。",
       "links": [
         { "label": "TRaSH Guides", "url": "https://trash-guides.info/", "note": "媒体命名和自动化指南" },
         { "label": "qBittorrent", "url": "https://www.qbittorrent.org/", "note": "BT 客户端" },
