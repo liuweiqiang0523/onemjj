@@ -14,16 +14,16 @@
         { "label": "ip.sb", "url": "https://ip.sb/", "note": "当前出口 IP" },
         { "label": "BrowserLeaks IP", "url": "https://browserleaks.com/ip", "note": "浏览器侧网络信息" }
       ],
-      "commands": ["curl -sL yabs.sh | bash", "curl -Lso- bench.sh | bash"]
+      "commands": ["curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh"]
     },
     {
       "id": "network",
       "name": "三网延迟",
-      "desc": "广东移动/联通/电信 TCPing",
+      "desc": "国内多节点 Ping / 路由 / 可用性",
       "icon": "📶",
       "category": "Network",
-      "badge": "待接入",
-      "body": "后续可接入你的 CF VPS Monitor 节点，专门看广东三网/省市运营商延迟，而不是 Google/CF 泛目标。",
+      "badge": "常用",
+      "body": "用国内外多节点工具检查延迟、路由和连通性，排查是本地网络、运营商还是目标服务的问题。",
       "links": [
         { "label": "Cloudflare Trace", "url": "https://www.cloudflare.com/cdn-cgi/trace", "note": "查看当前 CF 边缘" },
         { "label": "Ping.pe", "url": "https://ping.pe/", "note": "临时全球延迟测试" },
@@ -48,15 +48,14 @@
     },
     {
       "id": "selfhosted",
-      "name": "自托管入口",
-      "desc": "Vaultwarden / Emby / qB / msgo",
+      "name": "自托管与访问",
+      "desc": "服务入口保护 / 反代 / 身份验证",
       "icon": "🏠",
       "category": "Selfhosted",
-      "private": true,
-      "body": "公开站不直接暴露私人后台地址。后续可以做 /home 隐藏页，或者加 Cloudflare Access。",
+      "body": "公开导航不要直接暴露私人服务地址；使用 Cloudflare Access、VPN 或其他身份验证保护管理入口。",
       "links": [
-        { "label": "稍后配置私人入口", "url": "#", "note": "避免公开泄露后台" },
-        { "label": "Cloudflare Access", "url": "https://developers.cloudflare.com/cloudflare-one/applications/", "note": "给私人入口加登录保护" }
+        { "label": "Cloudflare Access", "url": "https://developers.cloudflare.com/cloudflare-one/applications/", "note": "给私人入口加身份验证" },
+        { "label": "Caddy 文档", "url": "https://caddyserver.com/docs/", "note": "低维护 HTTPS 与反向代理" }
       ]
     },
     {
@@ -71,7 +70,7 @@
         { "label": "qBittorrent", "url": "https://www.qbittorrent.org/", "note": "BT 客户端" },
         { "label": "Emby", "url": "https://emby.media/", "note": "媒体库" }
       ],
-      "commands": ["docker compose ps qbittorrent", "docker compose logs --tail=80 msgo"]
+      "commands": ["docker compose ps", "docker compose logs --tail=80 <service>"]
     },
     {
       "id": "ai-api",
@@ -117,11 +116,11 @@
     {
       "id": "status",
       "name": "状态页",
-      "desc": "Mac mini / Oracle / LAX",
+      "desc": "Uptime Kuma / Better Stack / 状态通知",
       "icon": "📡",
       "category": "Status",
-      "badge": "计划",
-      "body": "后续可以接 Uptime Kuma、Cloudflare Worker 或你自己的 VPS Monitor。",
+      "badge": "参考",
+      "body": "状态页搭建与可用性监控参考：先监控真正重要的服务，再决定是否公开状态。",
       "links": [
         { "label": "Uptime Kuma", "url": "https://github.com/louislam/uptime-kuma", "note": "自托管状态页" },
         { "label": "Better Stack Status", "url": "https://betterstack.com/status-page", "note": "托管状态页" }
@@ -129,8 +128,8 @@
     }
   ],
   "scripts": [
-    { "title": "YABS 跑分", "cmd": "curl -sL yabs.sh | bash" },
-    { "title": "Bench.sh", "cmd": "curl -Lso- bench.sh | bash" },
+    { "title": "下载并检查 YABS", "cmd": "curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh", "source": { "label": "YABS 源码", "url": "https://github.com/masonr/yet-another-bench-script" } },
+    { "title": "检查 HTTP 响应头", "cmd": "curl -fsSI https://onemjj.com", "source": { "label": "curl 文档", "url": "https://curl.se/docs/manpage.html" } },
     { "title": "Docker 状态", "cmd": "docker compose ps && docker stats --no-stream" },
     { "title": "端口占用", "cmd": "sudo lsof -iTCP -sTCP:LISTEN -n -P" }
   ],

@@ -13,7 +13,7 @@ export type Tool = {
   links: Link[];
   commands?: string[];
 };
-export type ScriptItem = { title: string; cmd: string };
+export type ScriptItem = { title: string; cmd: string; source?: Link };
 export type Note = { tag: string; title: string; body: string };
 export type SiteData = { tools: Tool[]; scripts: ScriptItem[]; notes: Note[] };
 
