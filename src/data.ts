@@ -15,6 +15,13 @@ export type Tool = {
 };
 export type ScriptItem = { title: string; cmd: string; source?: Link };
 export type Note = { tag: string; title: string; body: string };
-export type SiteData = { tools: Tool[]; scripts: ScriptItem[]; notes: Note[] };
+export type Weekly = {
+  issue: string;
+  date: string;
+  headlineTag: string;
+  headlineTitle: string;
+  headlineBody: string;
+};
+export type SiteData = { tools: Tool[]; scripts: ScriptItem[]; notes: Note[]; weekly?: Weekly };
 
 export const fallbackData = defaultData as SiteData;

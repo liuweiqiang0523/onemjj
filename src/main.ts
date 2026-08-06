@@ -168,11 +168,22 @@ function renderHome() {
 }
 
 function renderWeekly() {
+  const weekly = siteData.weekly ?? {
+    issue: '001',
+    date: '2026-07-11',
+    headlineTag: '本期头条',
+    headlineTitle: '这不是导航站，是一份买鸡后的自救报纸。',
+    headlineBody: '首页保留工具箱效率，小报负责沉淀 MJJ 笔记、促销观察、踩坑记录和低维护经验。每一期都有固定地址，可以收藏，也可以直接分享。',
+  };
+  const displayDate = weekly.date.replaceAll('-', '.');
   return `<section class="weekly">
-    <header><div><span class="issue-label">ONE MJJ WEEKLY</span><h1>OneMJJ 小报</h1><p>一个 MJJ 的赛博杂物间：工具、脚本、行情和生存手册。</p></div><code>ISSUE 001<br/><time datetime="2026-07-11">2026.07.11</time></code></header>
-    <article class="headline"><span>本期头条</span><h2>这不是导航站，是一份买鸡后的自救报纸。</h2><p>首页保留工具箱效率，小报负责沉淀 MJJ 笔记、促销观察、踩坑记录和低维护经验。每一期都有固定地址，可以收藏，也可以直接分享。</p></article>
+    <header><div><span class="issue-label">ONE MJJ WEEKLY</span><h1>OneMJJ 小报</h1><p>一个 MJJ 的赛博杂物间：工具、脚本、行情和生存手册。</p></div><code>ISSUE ${escapeHtml(weekly.issue)}<br/><time datetime="${escapeHtml(weekly.date)}">${escapeHtml(displayDate)}</time></code></header>
+    <article class="headline"><span>${escapeHtml(weekly.headlineTag)}</span><h2>${escapeHtml(weekly.headlineTitle)}</h2><p>${escapeHtml(weekly.headlineBody)}</p></article>
     <div class="grid tools-grid paper">${siteData.tools.slice(0, 8).map(toolCard).join('')}</div>
-    <div class="notes">${siteData.notes.map(note => `<article><span>${escapeHtml(note.tag)}</span><h3>${escapeHtml(note.title)}</h3><p>${escapeHtml(note.body)}</p></article>`).join('')}</div>
+    <div class="notes">${siteData.notes.map(note => {
+      const paragraphs = note.body.split('\n').map(p => p.trim()).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+      return `<details class="note-card"><summary><span>${escapeHtml(note.tag)}</span><h3>${escapeHtml(note.title)}</h3></summary><div class="note-body">${paragraphs}</div></details>`;
+    }).join('')}</div>
   </section>`;
 }
 

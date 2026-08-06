@@ -67,8 +67,16 @@ main{max-width:1320px;margin:auto;padding:28px}
 .headline h2{font-size:42px;letter-spacing:-1.5px;line-height:1.05;margin:16px 0}
 .headline p,.notes p{line-height:1.65;color:var(--paper-soft)}
 .paper .tool-card{border:1.5px solid var(--paper-ink);box-shadow:5px 5px 0 var(--paper-ink)}
-.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
-.notes article{background:var(--paper-card);border:1.5px solid var(--paper-ink);border-radius:18px;padding:18px}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:18px}
+.note-card{background:var(--paper-card);border:1.5px solid var(--paper-ink);border-radius:18px;padding:18px}
+.note-card summary{cursor:pointer;list-style:none;display:flex;flex-direction:column;gap:10px}
+.note-card summary::-webkit-details-marker{display:none}
+.note-card summary h3{margin:0}
+.note-card summary::after{content:'展开 ↓';align-self:flex-start;font-size:12px;color:var(--paper-soft);border:1px solid var(--paper-chip-line);border-radius:999px;padding:4px 9px;margin-top:2px}
+.note-card[open] summary::after{content:'收起 ↑'}
+.note-card .note-body{margin-top:16px;padding-top:14px;border-top:1px dashed var(--paper-ink)}
+.note-card .note-body p{line-height:1.7;margin:0 0 12px}
+.note-card .note-body p:last-child{margin-bottom:0}
 .tool-detail{padding:28px}
 .back{padding:11px 15px}
 .detail-hero{display:grid;grid-template-columns:1fr 260px;gap:20px;align-items:stretch;margin-top:20px}

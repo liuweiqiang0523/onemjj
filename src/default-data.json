@@ -9,12 +9,30 @@
       "badge": "常用",
       "body": "买鸡后第一件事：看基础性能、路由、解锁和端口，不要先上头续费。",
       "links": [
-        { "label": "Ping.pe", "url": "https://ping.pe/", "note": "全球 Ping / TCPing" },
-        { "label": "IPCheck", "url": "https://ipcheck.ing/", "note": "IP 质量和解锁检测" },
-        { "label": "ip.sb", "url": "https://ip.sb/", "note": "当前出口 IP" },
-        { "label": "BrowserLeaks IP", "url": "https://browserleaks.com/ip", "note": "浏览器侧网络信息" }
+        {
+          "label": "Ping.pe",
+          "url": "https://ping.pe/",
+          "note": "全球 Ping / TCPing"
+        },
+        {
+          "label": "IPCheck",
+          "url": "https://ipcheck.ing/",
+          "note": "IP 质量和解锁检测"
+        },
+        {
+          "label": "ip.sb",
+          "url": "https://ip.sb/",
+          "note": "当前出口 IP"
+        },
+        {
+          "label": "BrowserLeaks IP",
+          "url": "https://browserleaks.com/ip",
+          "note": "浏览器侧网络信息"
+        }
       ],
-      "commands": ["curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh"]
+      "commands": [
+        "curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh"
+      ]
     },
     {
       "id": "network",
@@ -25,11 +43,26 @@
       "badge": "常用",
       "body": "用国内外多节点工具检查延迟、路由和连通性，排查是本地网络、运营商还是目标服务的问题。",
       "links": [
-        { "label": "Cloudflare Trace", "url": "https://www.cloudflare.com/cdn-cgi/trace", "note": "查看当前 CF 边缘" },
-        { "label": "Ping.pe", "url": "https://ping.pe/", "note": "临时全球延迟测试" },
-        { "label": "ITDOG Ping", "url": "https://www.itdog.cn/ping/", "note": "国内多节点 Ping" }
+        {
+          "label": "Cloudflare Trace",
+          "url": "https://www.cloudflare.com/cdn-cgi/trace",
+          "note": "查看当前 CF 边缘"
+        },
+        {
+          "label": "Ping.pe",
+          "url": "https://ping.pe/",
+          "note": "临时全球延迟测试"
+        },
+        {
+          "label": "ITDOG Ping",
+          "url": "https://www.itdog.cn/ping/",
+          "note": "国内多节点 Ping"
+        }
       ],
-      "commands": ["ping gd-cm.zstaticcdn.com", "curl -w \"time_connect=%{time_connect}\\n\" -o /dev/null -s https://onemjj.com"]
+      "commands": [
+        "ping gd-cm.zstaticcdn.com",
+        "curl -w \"time_connect=%{time_connect}\\n\" -o /dev/null -s https://onemjj.com"
+      ]
     },
     {
       "id": "net-tools",
@@ -39,12 +72,31 @@
       "category": "Network",
       "body": "排查域名、证书、解析和端口时常用的网页工具。",
       "links": [
-        { "label": "DNS Checker", "url": "https://dnschecker.org/", "note": "全球 DNS 传播" },
-        { "label": "MXToolbox", "url": "https://mxtoolbox.com/", "note": "MX/TXT/黑名单检查" },
-        { "label": "crt.sh", "url": "https://crt.sh/", "note": "证书透明日志" },
-        { "label": "SecurityTrails", "url": "https://securitytrails.com/", "note": "DNS 历史" }
+        {
+          "label": "DNS Checker",
+          "url": "https://dnschecker.org/",
+          "note": "全球 DNS 传播"
+        },
+        {
+          "label": "MXToolbox",
+          "url": "https://mxtoolbox.com/",
+          "note": "MX/TXT/黑名单检查"
+        },
+        {
+          "label": "crt.sh",
+          "url": "https://crt.sh/",
+          "note": "证书透明日志"
+        },
+        {
+          "label": "SecurityTrails",
+          "url": "https://securitytrails.com/",
+          "note": "DNS 历史"
+        }
       ],
-      "commands": ["dig NS onemjj.com", "curl -I https://onemjj.com"]
+      "commands": [
+        "dig NS onemjj.com",
+        "curl -I https://onemjj.com"
+      ]
     },
     {
       "id": "selfhosted",
@@ -54,8 +106,26 @@
       "category": "Selfhosted",
       "body": "公开导航不要直接暴露私人服务地址；使用 Cloudflare Access、VPN 或其他身份验证保护管理入口。",
       "links": [
-        { "label": "Cloudflare Access", "url": "https://developers.cloudflare.com/cloudflare-one/applications/", "note": "给私人入口加身份验证" },
-        { "label": "Caddy 文档", "url": "https://caddyserver.com/docs/", "note": "低维护 HTTPS 与反向代理" }
+        {
+          "label": "Cloudflare Access",
+          "url": "https://developers.cloudflare.com/cloudflare-one/applications/",
+          "note": "给私人入口加身份验证"
+        },
+        {
+          "label": "Caddy 文档",
+          "url": "https://caddyserver.com/docs/",
+          "note": "低维护 HTTPS 与反向代理"
+        },
+        {
+          "label": "Cloudflare Tunnel",
+          "url": "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/",
+          "note": "无公网 IP 也能安全暴露服务"
+        },
+        {
+          "label": "Lucky",
+          "url": "https://github.com/gdy666/lucky",
+          "note": "开源反代 / DDNS 工具"
+        }
       ]
     },
     {
@@ -66,11 +136,26 @@
       "category": "Media",
       "body": "媒体自动化、下载整理和播放服务的常用文档入口。公开页面只放通用资料，不暴露私人服务地址。",
       "links": [
-        { "label": "TRaSH Guides", "url": "https://trash-guides.info/", "note": "媒体命名和自动化指南" },
-        { "label": "qBittorrent", "url": "https://www.qbittorrent.org/", "note": "BT 客户端" },
-        { "label": "Emby", "url": "https://emby.media/", "note": "媒体库" }
+        {
+          "label": "TRaSH Guides",
+          "url": "https://trash-guides.info/",
+          "note": "媒体命名和自动化指南"
+        },
+        {
+          "label": "qBittorrent",
+          "url": "https://www.qbittorrent.org/",
+          "note": "BT 客户端"
+        },
+        {
+          "label": "Emby",
+          "url": "https://emby.media/",
+          "note": "媒体库"
+        }
       ],
-      "commands": ["docker compose ps", "docker compose logs --tail=80 <service>"]
+      "commands": [
+        "docker compose ps",
+        "docker compose logs --tail=80 <service>"
+      ]
     },
     {
       "id": "ai-api",
@@ -80,11 +165,26 @@
       "category": "AI",
       "body": "放中转、模型可用性、Codex/Claude/Gemini 相关工具。",
       "links": [
-        { "label": "OpenRouter Models", "url": "https://openrouter.ai/models", "note": "模型列表和价格" },
-        { "label": "LM Arena", "url": "https://lmarena.ai/", "note": "模型效果参考" },
-        { "label": "GitHub Copilot", "url": "https://github.com/features/copilot", "note": "官方代码助手" }
+        {
+          "label": "OpenRouter Models",
+          "url": "https://openrouter.ai/models",
+          "note": "模型列表和价格"
+        },
+        {
+          "label": "LM Arena",
+          "url": "https://lmarena.ai/",
+          "note": "模型效果参考"
+        },
+        {
+          "label": "GitHub Copilot",
+          "url": "https://github.com/features/copilot",
+          "note": "官方代码助手"
+        }
       ],
-      "commands": ["curl -s https://api.openai.com/v1/models", "codex --version"]
+      "commands": [
+        "curl -s https://api.openai.com/v1/models",
+        "codex --version"
+      ]
     },
     {
       "id": "scripts",
@@ -94,11 +194,26 @@
       "category": "Scripts",
       "body": "把经常搜的命令集中起来，点击下方脚本卡片可复制。",
       "links": [
-        { "label": "Docker Compose Docs", "url": "https://docs.docker.com/compose/", "note": "Compose 文档" },
-        { "label": "Caddy Docs", "url": "https://caddyserver.com/docs/", "note": "反代配置" },
-        { "label": "Nginx Docs", "url": "https://nginx.org/en/docs/", "note": "Nginx 文档" }
+        {
+          "label": "Docker Compose Docs",
+          "url": "https://docs.docker.com/compose/",
+          "note": "Compose 文档"
+        },
+        {
+          "label": "Caddy Docs",
+          "url": "https://caddyserver.com/docs/",
+          "note": "反代配置"
+        },
+        {
+          "label": "Nginx Docs",
+          "url": "https://nginx.org/en/docs/",
+          "note": "Nginx 文档"
+        }
       ],
-      "commands": ["docker compose pull && docker compose up -d", "journalctl -u nginx -n 100 --no-pager"]
+      "commands": [
+        "docker compose pull && docker compose up -d",
+        "journalctl -u nginx -n 100 --no-pager"
+      ]
     },
     {
       "id": "wiki",
@@ -108,9 +223,21 @@
       "category": "Wiki",
       "body": "整理买鸡经验、坑点和生存手册。第一版先做入口，后面逐篇补内容。",
       "links": [
-        { "label": "LowEndTalk", "url": "https://lowendtalk.com/", "note": "海外低价 VPS 社区" },
-        { "label": "HostLoc", "url": "https://hostloc.com/", "note": "主机交流" },
-        { "label": "Cloudflare Docs", "url": "https://developers.cloudflare.com/", "note": "CF 文档" }
+        {
+          "label": "LowEndTalk",
+          "url": "https://lowendtalk.com/",
+          "note": "海外低价 VPS 社区"
+        },
+        {
+          "label": "HostLoc",
+          "url": "https://hostloc.com/",
+          "note": "主机交流"
+        },
+        {
+          "label": "Cloudflare Docs",
+          "url": "https://developers.cloudflare.com/",
+          "note": "CF 文档"
+        }
       ]
     },
     {
@@ -122,20 +249,77 @@
       "badge": "参考",
       "body": "状态页搭建与可用性监控参考：先监控真正重要的服务，再决定是否公开状态。",
       "links": [
-        { "label": "Uptime Kuma", "url": "https://github.com/louislam/uptime-kuma", "note": "自托管状态页" },
-        { "label": "Better Stack Status", "url": "https://betterstack.com/status-page", "note": "托管状态页" }
+        {
+          "label": "Uptime Kuma",
+          "url": "https://github.com/louislam/uptime-kuma",
+          "note": "自托管状态页"
+        },
+        {
+          "label": "Better Stack Status",
+          "url": "https://betterstack.com/status-page",
+          "note": "托管状态页"
+        },
+        {
+          "label": "Gatus",
+          "url": "https://github.com/TwiN/gatus",
+          "note": "轻量自托管状态页"
+        }
       ]
     }
   ],
   "scripts": [
-    { "title": "下载并检查 YABS", "cmd": "curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh", "source": { "label": "YABS 源码", "url": "https://github.com/masonr/yet-another-bench-script" } },
-    { "title": "检查 HTTP 响应头", "cmd": "curl -fsSI https://onemjj.com", "source": { "label": "curl 文档", "url": "https://curl.se/docs/manpage.html" } },
-    { "title": "Docker 状态", "cmd": "docker compose ps && docker stats --no-stream" },
-    { "title": "端口占用", "cmd": "sudo lsof -iTCP -sTCP:LISTEN -n -P" }
+    {
+      "title": "下载并检查 YABS",
+      "cmd": "curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh",
+      "source": {
+        "label": "YABS 源码",
+        "url": "https://github.com/masonr/yet-another-bench-script"
+      }
+    },
+    {
+      "title": "检查 HTTP 响应头",
+      "cmd": "curl -fsSI https://onemjj.com",
+      "source": {
+        "label": "curl 文档",
+        "url": "https://curl.se/docs/manpage.html"
+      }
+    },
+    {
+      "title": "Docker 状态",
+      "cmd": "docker compose ps && docker stats --no-stream"
+    },
+    {
+      "title": "端口占用",
+      "cmd": "sudo lsof -iTCP -sTCP:LISTEN -n -P"
+    }
   ],
   "notes": [
-    { "tag": "传家宝观察", "title": "KS / 10G / 年付鸡行情", "body": "记录哪些是真香，哪些只是群友一喊你就上头。" },
-    { "tag": "生存手册", "title": "新手 MJJ 如何少踩坑", "body": "SSH、安全、备份、反代、解锁、回程，一页一坑。" },
-    { "tag": "低维护原则", "title": "能上 Pages 就不上 VPS", "body": "静态优先、配置文件优先、少数据库、少手工 Web 控制台。" }
-  ]
+    {
+      "tag": "传家宝观察",
+      "title": "KS / 10G / 年付鸡行情",
+      "body": "判断标准就三条：用途匹配、长期成本、跑路风险。群友喊得越响，越要先等三天。\n\n本月真实观察：WorkBuddy 的 hy3（腾讯混元）白嫖额度续到 8 月底，实测可用。这类临时额度只适合测试和低风险任务，别把生产数据放上去。\n\n年付鸡的坑：促销价和续费价是两套价格，下单前先查续费价再决定上不上车。"
+    },
+    {
+      "tag": "生存手册",
+      "title": "新手 MJJ 如何少踩坑 · 第一页",
+      "body": "一页一坑，先写最疼的三个：\n\nSSH：新建机器第一件事换密钥登录、关密码认证。密码登录的机器在公网上活不过一个扫描周期。\n\n备份：没有异地备份的数据等于没有数据。restic + 对象存储，一条 cron 就能跑，恢复演练至少做一次。\n\n反代：端口别裸奔。能上 Cloudflare Tunnel / Access 就别把管理面板直接暴露到公网。"
+    },
+    {
+      "tag": "低维护原则",
+      "title": "能上 Pages 就不上 VPS",
+      "body": "原则很简单：静态优先、配置文件优先、少数据库、少手工控制台。\n\n本站就是活例子：Cloudflare Pages 托管、一个 KV 存全部内容、GitHub Actions 自动部署——改一行文案推上去就上线，不用 SSH，不用重启，不用盯着面板。\n\n先问自己三个问题：这个服务真的需要常驻吗？数据能放进 KV 或静态文件吗？部署能交给 CI 吗？三个都答不上来，再考虑 VPS。"
+    },
+    {
+      "tag": "踩坑记录",
+      "title": "agentrouter.org：公益站也有门槛",
+      "body": "想把 agentrouter.org（AI Coding 公益站）接进 sub2api 账号池，结果德国、香港、本机代理所有路径全部被拒：unauthorized client detected。\n\n结论：这类公益中转普遍有客户端指纹或地域门槛，不是配置能绕的。接任何新上游前，先拿一把小 key 从目标服务器实测连通，再决定要不要建账号。"
+    }
+  ],
+  "weekly": {
+    "issue": "002",
+    "date": "2026-08-06",
+    "headlineTag": "本期头条",
+    "headlineTitle": "自救中心上线一个月，机器先于内容运转起来",
+    "headlineBody": "首页是工具台，小报是报纸，后台是控制台——三样东西共用 23KB 的 JS 和一个 KV 配置。这期讲讲这台机器是怎么自己运转的：深浅色跟随系统、未知页面返回真 404、推送 GitHub 就自动上线。工具先服务自己，再顺手公开。"
+  }
 }
