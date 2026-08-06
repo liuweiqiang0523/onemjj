@@ -1,0 +1,88 @@
+:root {
+  --ink: #111827;
+  --muted: #667085;
+  --line: #e5e7eb;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #172033;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background:
+    radial-gradient(circle at 10% 0, #dff3ff 0, transparent 32%),
+    radial-gradient(circle at 92% 8%, #ffe6d5 0, transparent 34%),
+    linear-gradient(135deg, #f7fbff, #fff8ef 50%, #f7f2ff);
+}
+
+main { padding: 28px; }
+
+.card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 30px;
+  box-shadow: 0 24px 80px rgba(45, 55, 90, 0.13);
+  padding: 44px 40px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.mark { margin-bottom: 18px; }
+
+.eyebrow {
+  display: inline-flex;
+  color: #0f766e;
+  background: #ccfbf1;
+  border: 1px solid #99f6e4;
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+h1 {
+  letter-spacing: -1.5px;
+  color: var(--ink);
+  margin: 18px 0 10px;
+  font-size: clamp(26px, 5vw, 40px);
+  line-height: 1.1;
+}
+
+p { color: var(--muted); font-size: 17px; line-height: 1.7; margin: 0 0 26px; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.actions a {
+  border-radius: 999px;
+  padding: 13px 18px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.primary { background: var(--ink); color: #fff; }
+.primary:hover { background: #263244; }
+.ghost { color: var(--ink); border: 1px solid var(--line); background: #fff; }
+.ghost:hover { box-shadow: 0 10px 24px rgba(20, 30, 60, 0.09); }
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 12px 40px;
+  font-size: 14px;
+}
+
+@media (width <= 560px) {
+  main { padding: 14px; }
+  .card { border-radius: 24px; padding: 30px 24px; }
+}
