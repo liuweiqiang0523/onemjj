@@ -53,6 +53,38 @@ const SECURITY_HEADERS: Record<string, string> = {
 let cache = { at: 0, ids: new Set<string>() };
 const CACHE_TTL_MS = 30_000;
 
+let postsCache: { at: number; data: any } = { at: 0, data: null };
+const POSTS_TTL_MS = 5 * 60_000;
+
+/** Proxy the blog's latest article (server-side; avoids CORS and hides the origin). */
+async function latestPost(): Promise<any | null> {
+  const now = Date.now();
+  if (postsCache.data && now - postsCache.at < POSTS_TTL_MS) return postsCache.data;
+  try {
+    const res = await fetch('https://blog.onemjj.com/api/posts', {
+      headers: { 'User-Agent': 'onemjj-site/1.0', Accept: 'application/json' },
+    });
+    if (!res.ok) return postsCache.data ?? null;
+    const posts: any[] = await res.json();
+    if (!Array.isArray(posts) || !posts.length) return postsCache.data ?? null;
+    const sorted = [...posts].sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+    const p = sorted.find((x: any) => x && x.slug && x.title) ?? sorted[0];
+    if (!p) return null;
+    postsCache = {
+      at: now,
+      data: {
+        title: p.title,
+        excerpt: p.excerpt || '',
+        url: `https://blog.onemjj.com/posts/${p.slug}`,
+        date: (p.createdAt || '').slice(0, 10),
+      },
+    };
+    return postsCache.data;
+  } catch {
+    return postsCache.data ?? null;
+  }
+}
+
 async function toolIds(env: any): Promise<Set<string>> {
   const now = Date.now();
   if (cache.ids.size && now - cache.at < CACHE_TTL_MS) return cache.ids;
@@ -108,6 +140,19 @@ export async function onRequest({ request, env, next }: { request: Request; env:
   // API endpoints are handled by their own functions.
   if (path === '/api/data' || (path === '/api/admin' && request.method === 'POST')) {
     return next();
+  }
+
+  // Latest blog post, proxied server-side from the Monolith blog.
+  if (path === '/api/latest-post') {
+    const post = await latestPost();
+    if (!post) return json404();
+    return new Response(JSON.stringify(post), {
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'public, max-age=300, s-maxage=300',
+        'x-content-type-options': 'nosniff',
+      },
+    });
   }
 
   // Client-side routes: serve the app shell.

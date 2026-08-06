@@ -157,7 +157,7 @@ function renderHome() {
     <div class="chips" aria-label="工具分类">${cats().map(category => `<button type="button" class="chip ${category === active ? 'active' : ''}" data-cat="${escapeHtml(category)}">${escapeHtml(category === '全部' ? category : categoryLabels[category] ?? category)}</button>`).join('')}</div>
   </section>
   ${tools.length ? `<section class="grid tools-grid" aria-live="polite">${tools.map(toolCard).join('')}</section>` : '<section class="empty glass">没有找到匹配的工具，换个关键词试试。</section>'}
-  <section class="latest-post glass">
+  <section class="latest-post glass" id="latest-post">
     <div><span class="eyebrow">Latest post</span><h2>用 SafeRelay 搭一个防骚扰 Telegram 私聊机器人</h2><p>访客只需要私聊 Bot，后台按用户自动分话题；再加上 Turnstile、编辑同步、内容保护和工单状态，做成一个轻量联系入口。</p></div>
     <a class="primary-link" href="${articlePath}" data-route>阅读实战记录 →</a>
   </section>
@@ -266,6 +266,7 @@ function navigate(path: string) {
 
 function bind() {
   bindRouteLinks();
+  fetchLatestPost();
   document.querySelectorAll<HTMLButtonElement>('[data-cat]').forEach(button => {
     button.addEventListener('click', () => {
       active = button.dataset.cat ?? '全部';
@@ -304,6 +305,31 @@ function bindRouteLinks() {
       navigate(link.pathname);
     });
   });
+}
+
+/** Replace the fallback "Latest post" card with the blog's newest article, if reachable. */
+async function fetchLatestPost() {
+  const el = document.getElementById('latest-post');
+  if (!el || el.dataset.loaded) return;
+  try {
+    const res = await fetch('/api/latest-post');
+    if (!res.ok) return;
+    const post = await res.json();
+    if (!post?.title) return;
+    el.dataset.loaded = 'true';
+    const div = el.querySelector('div');
+    const a = el.querySelector('a');
+    if (div) div.innerHTML = `<span class="eyebrow">Latest post</span><h2>${escapeHtml(post.title)}</h2><p>${escapeHtml(post.excerpt || '')}</p>`;
+    if (a) {
+      a.href = post.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.removeAttribute('data-route');
+      a.textContent = '去博客阅读 →';
+    }
+  } catch {
+    // keep the bundled fallback
+  }
 }
 
 window.addEventListener('popstate', () => { readRoute(); render(); window.scrollTo({ top: 0 }); });
