@@ -14,6 +14,10 @@
 - 修复未知路径全部返回 200 并渲染首页的问题。
 - 保证由函数渲染的页面（SPA 路由、404）与静态资源保持同一套安全响应头（CSP、HSTS、X-Frame-Options 等）。
 
+### CI
+
+- 加入 GitHub Actions 自动部署（deploy-cf.yml）：push 到 main 自动构建并部署到 Cloudflare Pages，不再依赖本机手动部署。
+
 ## 0.2.0 - 2026-07-11
 
 ### 新功能
