@@ -1,7 +1,16 @@
 :root {
+  color-scheme: light dark;
   --ink: #111827;
   --muted: #667085;
   --line: #e5e7eb;
+  --card-bg: rgba(255, 255, 255, 0.82);
+  --card-line: rgba(255, 255, 255, 0.9);
+  --shadow: 0 24px 80px rgba(45, 55, 90, 0.13);
+  --body-ink: #172033;
+  --body-bg:
+    radial-gradient(circle at 10% 0, #dff3ff 0, transparent 32%),
+    radial-gradient(circle at 92% 8%, #ffe6d5 0, transparent 34%),
+    linear-gradient(135deg, #f7fbff, #fff8ef 50%, #f7f2ff);
 }
 
 * { box-sizing: border-box; }
@@ -14,12 +23,9 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: #172033;
+  color: var(--body-ink);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background:
-    radial-gradient(circle at 10% 0, #dff3ff 0, transparent 32%),
-    radial-gradient(circle at 92% 8%, #ffe6d5 0, transparent 34%),
-    linear-gradient(135deg, #f7fbff, #fff8ef 50%, #f7f2ff);
+  background: var(--body-bg);
 }
 
 main { padding: 28px; }
@@ -27,10 +33,10 @@ main { padding: 28px; }
 .card {
   max-width: 640px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: var(--card-bg);
+  border: 1px solid var(--card-line);
   border-radius: 30px;
-  box-shadow: 0 24px 80px rgba(45, 55, 90, 0.13);
+  box-shadow: var(--shadow);
   padding: 44px 40px;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -85,4 +91,28 @@ footer {
 @media (width <= 560px) {
   main { padding: 14px; }
   .card { border-radius: 24px; padding: 30px 24px; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8edf4;
+    --muted: #94a3b8;
+    --line: #26304a;
+    --card-bg: rgba(20, 27, 42, 0.86);
+    --card-line: rgba(255, 255, 255, 0.07);
+    --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    --body-ink: #d7dee9;
+    --body-bg:
+      radial-gradient(circle at 10% 0, rgba(59, 130, 246, 0.16) 0, transparent 32%),
+      radial-gradient(circle at 92% 8%, rgba(249, 115, 22, 0.1) 0, transparent 34%),
+      linear-gradient(135deg, #0b1220, #101627 50%, #0d1220);
+  }
+  .eyebrow {
+    color: #5eead4;
+    background: rgba(20, 184, 166, 0.15);
+    border: 1px solid rgba(45, 212, 191, 0.3);
+  }
+  .primary { background: var(--ink); color: #0b1220; }
+  .primary:hover { background: #3b4757; }
+  .ghost { background: #151d30; }
 }
