@@ -102,7 +102,11 @@ function validData(data: any) {
     && validString(note.tag, 80)
     && validString(note.title, 200)
     && validString(note.body, 5000));
-  return toolsValid && scriptsValid && notesValid;
+  const probeValid = !data.probe || (validString(data.probe?.label, 160) && validUrl(data.probe?.url));
+  const heroLinksValid = !data.heroLinks || (Array.isArray(data.heroLinks)
+    && data.heroLinks.length <= 20
+    && data.heroLinks.every((link: any) => validString(link?.label, 160) && validUrl(link?.url)));
+  return toolsValid && scriptsValid && notesValid && probeValid && heroLinksValid;
 }
 
 function validOrigin(request: Request) {

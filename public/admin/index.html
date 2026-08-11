@@ -32,11 +32,12 @@
         <div class="brand"><h1>OneMJJ 后台</h1><p>编辑首页工具、脚本和小报内容。</p></div>
         <div class="top-actions"><a href="/" class="ghost-link">返回前台</a><button type="button" id="logoutBtn" class="ghost">退出</button><button type="button" id="saveBtn" class="save-float">保存发布</button></div>
       </header>
-      <div class="tabs" role="tablist"><button type="button" class="tab active" data-tab="tools">工具卡片</button><button type="button" class="tab" data-tab="scripts">脚本速查</button><button type="button" class="tab" data-tab="notes">小报/Wiki</button><button type="button" class="tab" data-tab="json">高级 JSON</button></div>
+      <div class="tabs" role="tablist"><button type="button" class="tab active" data-tab="tools">工具卡片</button><button type="button" class="tab" data-tab="scripts">脚本速查</button><button type="button" class="tab" data-tab="notes">小报/Wiki</button><button type="button" class="tab" data-tab="settings">站点设置</button><button type="button" class="tab" data-tab="json">高级 JSON</button></div>
       <p id="msg" aria-live="polite"></p>
       <div id="toolsPanel" class="split"><div class="card"><h2>工具列表</h2><div id="toolList" class="list"></div><div class="actions"><button type="button" id="newTool">新增工具</button></div></div><div class="card"><h2>编辑工具</h2><div class="form" id="toolForm"></div></div></div>
       <div id="scriptsPanel" class="card hidden"><h2>脚本速查</h2><div id="scriptList" class="list"></div><div class="actions"><button type="button" id="newScript">新增脚本</button></div></div>
       <div id="notesPanel" class="card hidden"><h2>小报 / Wiki 卡片</h2><div id="noteList" class="list"></div><div class="actions"><button type="button" id="newNote">新增卡片</button></div></div>
+      <div id="settingsPanel" class="card hidden"></div>
       <div id="jsonPanel" class="card hidden"><h2>高级 JSON</h2><p>如果表单不够用，可以直接编辑完整 JSON。保存前会执行结构和链接校验。</p><textarea id="jsonEdit" class="mono json-edit" spellcheck="false"></textarea></div>
     </section>
   </div>

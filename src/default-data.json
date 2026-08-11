@@ -325,5 +325,15 @@
   "probe": {
     "label": "没🐔の探针",
     "url": "https://tz.onemjj.com"
-  }
+  },
+  "heroLinks": [
+    {
+      "label": "瞎记录のBlog",
+      "url": "https://blog.onemjj.com"
+    },
+    {
+      "label": "没🐔の探针",
+      "url": "https://tz.onemjj.com"
+    }
+  ]
 }

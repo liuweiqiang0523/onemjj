@@ -131,8 +131,23 @@ function editNote(index) {
   syncJson(); renderNotes();
 }
 
+function renderSettings() {
+  const links = data.heroLinks?.length ? data.heroLinks : [
+    { label: '瞎记录のBlog', url: 'https://blog.onemjj.com' },
+    data.probe || { label: '没🐔の探针', url: 'https://tz.onemjj.com' },
+  ];
+  $('#settingsPanel').innerHTML = `<h2>首页快捷链接</h2>
+    ${textarea('h_links', '首页按钮（每行一个：标题|URL）', linksText(links))}
+    <p class="hint">每行一个按钮，格式：标题|链接地址。加一行 = 首页多一个按钮。修改后点右上角“保存发布”立即生效。</p>`;
+  $('#h_links').addEventListener('input', event => {
+    const parsed = parseLinks(event.target.value);
+    if (parsed.length) data.heroLinks = parsed;
+    syncJson();
+  });
+}
+
 function syncJson() { $('#jsonEdit').value = JSON.stringify(data, null, 2); }
-function renderAll() { renderTools(); renderScripts(); renderNotes(); syncJson(); }
+function renderAll() { renderTools(); renderScripts(); renderNotes(); renderSettings(); syncJson(); }
 
 $('#loginForm').addEventListener('submit', doLogin);
 $('#logoutBtn').addEventListener('click', async () => { try { await api('logout'); } finally { data = null; showLogin(); } });
@@ -153,7 +168,7 @@ $('#noteList').addEventListener('click', event => {
 });
 $$('.tab').forEach(button => button.addEventListener('click', () => {
   $$('.tab').forEach(tab => tab.classList.remove('active')); button.classList.add('active');
-  ['tools', 'scripts', 'notes', 'json'].forEach(id => $(`#${id}Panel`).classList.toggle('hidden', button.dataset.tab !== id));
+  ['tools', 'scripts', 'notes', 'settings', 'json'].forEach(id => $(`#${id}Panel`).classList.toggle('hidden', button.dataset.tab !== id));
 }));
 $('#newTool').addEventListener('click', () => { data.tools.push({ id: `tool-${Date.now()}`, name: '新工具', desc: '说明', icon: '🔗', category: 'Other', body: '详情说明', links: [] }); currentTool = data.tools.length - 1; syncJson(); renderTools(); });
 $('#newScript').addEventListener('click', () => { data.scripts.push({ title: '新脚本', cmd: 'echo hello' }); syncJson(); renderScripts(); });

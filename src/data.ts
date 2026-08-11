@@ -22,6 +22,6 @@ export type Weekly = {
   headlineTitle: string;
   headlineBody: string;
 };
-export type SiteData = { tools: Tool[]; scripts: ScriptItem[]; notes: Note[]; weekly?: Weekly; probe?: Link };
+export type SiteData = { tools: Tool[]; scripts: ScriptItem[]; notes: Note[]; weekly?: Weekly; probe?: Link; heroLinks?: Link[] };
 
 export const fallbackData = defaultData as SiteData;
