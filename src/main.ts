@@ -142,7 +142,7 @@ function renderHome() {
       <span class="eyebrow">OneMJJ / Low-maintenance survival center</span>
       <h1>一个 MJJ 的低维护自救中心</h1>
       <p>VPS 检测、网络排障、自托管、媒体、AI API、常用脚本和传家宝笔记，放进一个双端都舒服的工具台。</p>
-      <div class="actions"><a class="primary-link" href="#tools">开始使用</a><a class="ghost-link" href="/weekly/" data-route>看 MJJ 小报</a><a class="ghost-link" href="https://blog.onemjj.com" target="_blank" rel="noopener">瞎记录のBlog</a><a class="ghost-link" href="https://kk.onemjj.com" target="_blank" rel="noopener">没🐔の探针</a></div>
+      <div class="actions"><a class="primary-link" href="#tools">开始使用</a><a class="ghost-link" href="/weekly/" data-route>看 MJJ 小报</a><a class="ghost-link" href="https://blog.onemjj.com" target="_blank" rel="noopener">瞎记录のBlog</a><a class="ghost-link" href="https://tz.onemjj.com" target="_blank" rel="noopener">没🐔の探针</a></div>
     </div>
     <aside class="status-card" aria-label="站点信息">
       <b>站点进度</b>
