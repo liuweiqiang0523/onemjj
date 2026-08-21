@@ -15,6 +15,17 @@ export type Tool = {
 };
 export type ScriptItem = { title: string; cmd: string; source?: Link };
 export type Note = { tag: string; title: string; body: string };
+export type Post = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  tags: string[];
+  readMinutes: number;
+  content: string;
+  origin?: string;
+};
 export type Weekly = {
   issue: string;
   date: string;

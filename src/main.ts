@@ -1,10 +1,10 @@
-import { fallbackData, type Link, type SiteData, type Tool } from './data';
+import { fallbackData, type Link, type Post, type SiteData, type Tool } from './data';
+import { renderMarkdown, markdownToText } from './markdown';
 import './style.css';
 
-type Mode = 'home' | 'weekly' | 'tool' | 'article' | 'privacy' | 'about' | 'contact' | 'disclaimer';
+type Mode = 'home' | 'weekly' | 'tool' | 'article' | 'privacy' | 'about' | 'contact' | 'disclaimer' | 'blog' | 'post';
 
 const articleSlug = 'saferelay-telegram-private-chat-bot';
-const articlePath = `/blog/${articleSlug}/`;
 const contactEmail = 'liuweiqiang0523@gmail.com';
 const siteUpdated = '2026-08-21';
 
@@ -21,6 +21,8 @@ const categoryLabels: Record<string, string> = {
 };
 
 let siteData: SiteData = fallbackData;
+let posts: Post[] = [];
+let currentPost: Post | null = null;
 let active = '全部';
 let query = '';
 let mode: Mode = 'home';
@@ -63,6 +65,15 @@ async function loadData() {
     // Keep the bundled data available when the edge configuration is unreachable.
   }
   selected = siteData.tools[0] ?? fallbackData.tools[0];
+  try {
+    const res = await fetch('/data/posts.json');
+    if (res.ok) {
+      const loaded = await res.json();
+      if (Array.isArray(loaded)) posts = loaded;
+    }
+  } catch {
+    // Posts are additive; the rest of the site works without them.
+  }
 }
 
 function readRoute() {
@@ -90,6 +101,19 @@ function readRoute() {
   if (path === `/blog/${articleSlug}`) {
     mode = 'article';
     return;
+  }
+  if (path === '/blog') {
+    mode = 'blog';
+    return;
+  }
+  if (path.startsWith('/blog/')) {
+    const slug = decodeURIComponent(path.slice('/blog/'.length));
+    const found = posts.find(post => post.slug === slug);
+    if (found) {
+      currentPost = found;
+      mode = 'post';
+      return;
+    }
   }
   if (path.startsWith('/tools/')) {
     const id = decodeURIComponent(path.slice('/tools/'.length));
@@ -126,6 +150,10 @@ function updateHead() {
   const staticMeta = PAGE_META[mode];
   const title = staticMeta
     ? staticMeta.title
+    : mode === 'post' && currentPost
+    ? `${currentPost.title}｜OneMJJ`
+    : mode === 'blog'
+    ? '文章归档｜OneMJJ'
     : mode === 'article'
     ? '用 SafeRelay 搭一个防骚扰 Telegram 私聊机器人｜OneMJJ'
     : mode === 'weekly'
@@ -135,6 +163,10 @@ function updateHead() {
       : 'OneMJJ｜一个 MJJ 的低维护自救中心';
   const description = staticMeta
     ? staticMeta.description
+    : mode === 'post' && currentPost
+    ? (currentPost.excerpt || markdownToText(currentPost.content).slice(0, 150))
+    : mode === 'blog'
+    ? 'OneMJJ 文章归档：自托管、Telegram 机器人、Cloudflare 边缘部署与 AI 网关的实战记录与踩坑笔记。'
     : mode === 'article'
     ? 'SafeRelay 实战：用 Cloudflare Workers、KV 和 Turnstile 搭建 Telegram 私聊中转与话题工单机器人，并记录编辑同步与安全加固。'
     : mode === 'weekly'
@@ -207,10 +239,10 @@ function renderHome() {
     <div class="chips" aria-label="工具分类">${cats().map(category => `<button type="button" class="chip ${category === active ? 'active' : ''}" data-cat="${escapeHtml(category)}">${escapeHtml(category === '全部' ? category : categoryLabels[category] ?? category)}</button>`).join('')}</div>
   </section>
   ${tools.length ? `<section class="grid tools-grid" aria-live="polite">${tools.map(toolCard).join('')}</section>` : '<section class="empty glass">没有找到匹配的工具，换个关键词试试。</section>'}
-  <section class="latest-post glass" id="latest-post">
-    <div><span class="eyebrow">Latest post</span><h2>用 SafeRelay 搭一个防骚扰 Telegram 私聊机器人</h2><p>访客只需要私聊 Bot，后台按用户自动分话题；再加上 Turnstile、编辑同步、内容保护和工单状态，做成一个轻量联系入口。</p></div>
-    <a class="primary-link" href="${articlePath}" data-route>阅读实战记录 →</a>
-  </section>
+  ${posts.length ? `<section class="home-posts">
+    <div class="home-posts-head"><div><span class="eyebrow">Notes</span><h2>实战记录</h2><p>自托管、Telegram 机器人、边缘部署和 AI 网关的踩坑笔记。</p></div><a class="ghost-link" href="/blog/" data-route>全部文章 →</a></div>
+    <div class="post-list">${posts.slice(0, 3).map(postCard).join('')}</div>
+  </section>` : ''}
   <section id="scripts" class="scripts glass">
     <div><span class="eyebrow">Scripts</span><h2>脚本速查</h2><p>只负责复制，不会自动执行。运行前请先查看来源并读懂命令。</p></div>
     <div class="script-list">${renderScripts()}</div>
@@ -478,6 +510,58 @@ function renderDisclaimer() {
   </article>`;
 }
 
+function postCard(post: Post) {
+  return `<a class="post-card" href="/blog/${escapeHtml(post.slug)}/" data-route>
+    <span class="post-card-meta"><em>${escapeHtml(post.category)}</em><time datetime="${escapeHtml(post.date)}">${escapeHtml(post.date.replaceAll('-', '.'))}</time></span>
+    <b>${escapeHtml(post.title)}</b>
+    <small>${escapeHtml(post.excerpt)}</small>
+    <span class="post-card-tags">${post.tags.slice(0, 4).map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}<u>${post.readMinutes} 分钟</u></span>
+  </a>`;
+}
+
+function renderBlog() {
+  if (!posts.length) {
+    return `<section class="legal-page glass"><a class="back" href="/" data-route>← 返回首页</a><h1>文章归档</h1><p>文章正在载入，请稍候。</p></section>`;
+  }
+  return `<section class="blog-index">
+    <header class="blog-index-header">
+      <span class="eyebrow">Notes</span>
+      <h1>文章归档</h1>
+      <p>自托管、Telegram 机器人、Cloudflare 边缘部署和 AI 网关的实战记录。都是自己踩过的坑，不是教程搬运。</p>
+    </header>
+    <div class="post-list">${posts.map(postCard).join('')}</div>
+  </section>`;
+}
+
+function renderPost() {
+  const post = currentPost;
+  if (!post) return renderBlog();
+  const { html, headings } = renderMarkdown(post.content);
+  const toc = headings.filter(h => h.level === 2);
+  const index = posts.findIndex(p => p.slug === post.slug);
+  const prev = index > 0 ? posts[index - 1] : null;
+  const next = index >= 0 && index < posts.length - 1 ? posts[index + 1] : null;
+  return `<article class="post-page glass">
+    <a class="back" href="/blog/" data-route>← 全部文章</a>
+    <header class="post-page-header">
+      <span class="eyebrow">${escapeHtml(post.category)}</span>
+      <h1>${escapeHtml(post.title)}</h1>
+      <p class="post-lead">${escapeHtml(post.excerpt)}</p>
+      <div class="post-meta">
+        <time datetime="${escapeHtml(post.date)}">${escapeHtml(post.date.replaceAll('-', '.'))}</time>
+        <span>约 ${post.readMinutes} 分钟阅读</span>
+        <span class="post-tag-row">${post.tags.map(tag => `<i>${escapeHtml(tag)}</i>`).join('')}</span>
+      </div>
+    </header>
+    ${toc.length > 2 ? `<nav class="post-toc" aria-label="本页目录"><b>本页内容</b><ol>${toc.map(h => `<li><a href="#${escapeHtml(h.id)}">${escapeHtml(h.text)}</a></li>`).join('')}</ol></nav>` : ''}
+    <div class="post-body">${html}</div>
+    <footer class="post-page-footer">
+      ${prev ? `<a href="/blog/${escapeHtml(prev.slug)}/" data-route><span>上一篇</span><b>${escapeHtml(prev.title)}</b></a>` : '<span></span>'}
+      ${next ? `<a href="/blog/${escapeHtml(next.slug)}/" data-route class="next"><span>下一篇</span><b>${escapeHtml(next.title)}</b></a>` : '<span></span>'}
+    </footer>
+  </article>`;
+}
+
 function renderLinks(links: Link[]) {
   const validLinks = links
     .map(link => ({ ...link, safeUrl: safeExternalUrl(link.url) }))
@@ -503,6 +587,8 @@ const PAGE_RENDERERS: Record<string, () => string> = {
   about: renderAbout,
   contact: renderContact,
   disclaimer: renderDisclaimer,
+  blog: renderBlog,
+  post: renderPost,
 };
 
 function siteFooter() {
@@ -524,7 +610,7 @@ function render() {
   const content = pageRenderer
     ? pageRenderer()
     : mode === 'home' ? renderHome() : mode === 'weekly' ? renderWeekly() : mode === 'article' ? renderArticle() : renderTool();
-  app.innerHTML = `<nav class="top" aria-label="主导航"><a class="brand" href="/" data-route>OneMJJ</a><div>${navLink('/', '首页', mode === 'home' || mode === 'tool')}<a href="${articlePath}" data-route ${mode === 'article' ? 'class="active" aria-current="page"' : ''}>文章</a><a class="nav-admin" href="/admin/" rel="nofollow">控制台</a>${navLink('/weekly/', '小报', mode === 'weekly')}</div></nav><main>${content}</main>${siteFooter()}`;
+  app.innerHTML = `<nav class="top" aria-label="主导航"><a class="brand" href="/" data-route>OneMJJ</a><div>${navLink('/', '首页', mode === 'home' || mode === 'tool')}${navLink('/blog/', '文章', mode === 'blog' || mode === 'post' || mode === 'article')}<a class="nav-admin" href="/admin/" rel="nofollow">控制台</a>${navLink('/weekly/', '小报', mode === 'weekly')}</div></nav><main>${content}</main>${siteFooter()}`;
   bind();
 }
 
@@ -539,7 +625,6 @@ function navigate(path: string) {
 
 function bind() {
   bindRouteLinks();
-  fetchLatestPost();
   document.querySelectorAll<HTMLButtonElement>('[data-cat]').forEach(button => {
     button.addEventListener('click', () => {
       active = button.dataset.cat ?? '全部';
@@ -578,31 +663,6 @@ function bindRouteLinks() {
       navigate(link.pathname);
     });
   });
-}
-
-/** Replace the fallback "Latest post" card with the blog's newest article, if reachable. */
-async function fetchLatestPost() {
-  const el = document.getElementById('latest-post');
-  if (!el || el.dataset.loaded) return;
-  try {
-    const res = await fetch('/api/latest-post');
-    if (!res.ok) return;
-    const post = await res.json();
-    if (!post?.title) return;
-    el.dataset.loaded = 'true';
-    const div = el.querySelector('div');
-    const a = el.querySelector('a');
-    if (div) div.innerHTML = `<span class="eyebrow">Latest post</span><h2>${escapeHtml(post.title)}</h2><p>${escapeHtml(post.excerpt || '')}</p>`;
-    if (a) {
-      a.href = post.url;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.removeAttribute('data-route');
-      a.textContent = '去博客阅读 →';
-    }
-  } catch {
-    // keep the bundled fallback
-  }
 }
 
 window.addEventListener('popstate', () => { readRoute(); render(); window.scrollTo({ top: 0 }); });

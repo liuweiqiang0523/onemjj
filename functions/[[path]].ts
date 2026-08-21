@@ -4,8 +4,10 @@
  * The client-side app only knows these routes:
  *   /                                  home
  *   /weekly(/ )                         weekly paper
- *   /blog/<slug>(/ )                    articles
+ *   /blog(/ )                           post index
+ *   /blog/<slug>(/ )                    articles (slugs from public/data/posts.json)
  *   /tools/<id>(/ )                     tool detail pages (ids come from KV data)
+ *   /privacy /about /contact /disclaimer  policy pages
  *   /admin/*                            admin console (static app)
  * Everything else gets a proper 404, with a small matching page.
  *
@@ -14,12 +16,16 @@
  * project-level fallback; real static files pass through via next().
  */
 
+import { renderMarkdown } from '../src/markdown';
+
 const articleSlug = 'saferelay-telegram-private-chat-bot';
 
 const SPA_ROUTES = new Set([
   '/',
   '/weekly',
   '/weekly/',
+  '/blog',
+  '/blog/',
   '/privacy',
   '/privacy/',
   '/about',
@@ -180,6 +186,30 @@ async function siteData(env: any, url: URL): Promise<any> {
   return data ?? { tools: [], scripts: [], notes: [] };
 }
 
+let postsCacheStore: { at: number; data: any[] } = { at: 0, data: [] };
+const POSTS_CACHE_TTL_MS = 60_000;
+
+/** Synced blog posts, served from the static bundle. */
+async function loadPosts(env: any, url: URL): Promise<any[]> {
+  const now = Date.now();
+  if (postsCacheStore.data.length && now - postsCacheStore.at < POSTS_CACHE_TTL_MS) {
+    return postsCacheStore.data;
+  }
+  try {
+    const res = await env.ASSETS.fetch(new URL('/data/posts.json', url));
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        postsCacheStore = { at: now, data };
+        return data;
+      }
+    }
+  } catch {
+    // Posts are additive; SEO for other routes still works.
+  }
+  return postsCacheStore.data;
+}
+
 async function toolIds(env: any): Promise<Set<string>> {
   const now = Date.now();
   if (cache.ids.size && now - cache.at < CACHE_TTL_MS) return cache.ids;
@@ -263,11 +293,40 @@ function noscriptFooter(): string {
  * catalogue with descriptions and outbound links, and the legal pages in full.
  * The SPA replaces #app on boot, so this never double-renders for real users.
  */
-function seoContent(path: string, data: any): string {
+function seoContent(path: string, data: any, allPosts: any[] = []): string {
   const tools: any[] = Array.isArray(data?.tools) ? data.tools : [];
   const scripts: any[] = Array.isArray(data?.scripts) ? data.scripts : [];
   const notes: any[] = Array.isArray(data?.notes) ? data.notes : [];
   const clean = path.replace(/\/+$/, '') || '/';
+
+  // Full post body, server-rendered so the article text itself is indexable.
+  if (clean.startsWith('/blog/')) {
+    const slug = decodeURIComponent(clean.slice('/blog/'.length));
+    const post = allPosts.find((p: any) => p?.slug === slug);
+    if (post) {
+      const { html } = renderMarkdown(String(post.content ?? ''));
+      const idx = allPosts.findIndex((p: any) => p?.slug === slug);
+      const prev = idx > 0 ? allPosts[idx - 1] : null;
+      const next = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
+      return `<article>
+<h1>${esc(post.title)}</h1>
+<p>${esc(post.excerpt ?? '')}</p>
+<p>${esc(post.category ?? '')} · ${esc(post.date ?? '')} · 约 ${esc(post.readMinutes ?? '')} 分钟阅读${Array.isArray(post.tags) && post.tags.length ? ` · 标签：${post.tags.map((t: string) => esc(t)).join('、')}` : ''}</p>
+${html}
+<nav aria-label="上下篇">${prev ? `<a href="/blog/${esc(prev.slug)}/">上一篇：${esc(prev.title)}</a> ` : ''}${next ? `<a href="/blog/${esc(next.slug)}/">下一篇：${esc(next.title)}</a>` : ''}</nav>
+<p><a href="/blog/">全部文章</a> · <a href="/">返回 OneMJJ 首页</a></p>
+</article>
+${noscriptFooter()}`;
+    }
+  }
+
+  if (clean === '/blog') {
+    return `<h1>OneMJJ 文章归档</h1>
+<p>自托管、Telegram 机器人、Cloudflare 边缘部署和 AI 网关的实战记录。都是自己踩过的坑，不是教程搬运。共 ${allPosts.length} 篇。</p>
+${allPosts.length ? `<ul>${allPosts.map((p: any) => `<li><a href="/blog/${esc(p.slug)}/">${esc(p.title)}</a> — ${esc(p.excerpt ?? '')}（${esc(p.date ?? '')}，约 ${esc(p.readMinutes ?? '')} 分钟）</li>`).join('')}</ul>` : ''}
+<p><a href="/">返回 OneMJJ 首页</a></p>
+${noscriptFooter()}`;
+  }
 
   if (clean === '/privacy') {
     return `<h1>隐私政策</h1>
@@ -383,14 +442,15 @@ ${Array.from(byCategory.entries()).map(([category, items]) => `<h3>${esc(CATEGOR
     return `<li><a href="/tools/${esc(t.id)}/">${esc(t.name)}</a> — ${esc(t.desc)}。${esc(t.body ?? '')}${links.length ? ` 收录链接：${links.map((l: any) => esc(l.label)).join('、')}。` : ''}</li>`;
   }).join('')}</ul>`).join('')}
 ${scripts.length ? `<h2>脚本速查</h2><ul>${scripts.map((s: any) => `<li>${esc(s.title)}：<code>${esc(s.cmd)}</code></li>`).join('')}</ul><p>脚本只负责复制，不会自动执行。运行前请先查看来源并读懂命令。</p>` : ''}
+${allPosts.length ? `<h2>实战记录</h2><ul>${allPosts.slice(0, 6).map((p: any) => `<li><a href="/blog/${esc(p.slug)}/">${esc(p.title)}</a> — ${esc(p.excerpt ?? '')}</li>`).join('')}</ul><p><a href="/blog/">查看全部 ${allPosts.length} 篇文章</a></p>` : ''}
 <h2>OneMJJ 小报</h2>
 <p>除了工具台，本站还维护一份 <a href="/weekly/">OneMJJ 小报</a>，沉淀促销观察、踩坑记录和长期维护经验。</p>
 ${noscriptFooter()}`;
 }
 
 /** Inject crawler-visible markup into the SPA shell's #app container. */
-function injectSeo(html: string, path: string, data: any): string {
-  const content = seoContent(path, data);
+function injectSeo(html: string, path: string, data: any, allPosts: any[] = []): string {
+  const content = seoContent(path, data, allPosts);
   return html.replace(
     '<div id="app"></div>',
     `<div id="app"><div id="seo-content">${content}</div></div>`,
@@ -425,11 +485,23 @@ export async function onRequest({ request, env, next }: { request: Request; env:
     const id = decodeURIComponent(path.slice('/tools/'.length).replace(/\/+$/, ''));
     if (id) isTool = (await toolIds(env)).has(id);
   }
-  if (SPA_ROUTES.has(path) || isTool) {
+
+  // Synced posts are also SPA routes; unknown slugs must still 404.
+  let isPost = false;
+  let allPosts: any[] = [];
+  if (path.startsWith('/blog/') || path === '/blog' || SPA_ROUTES.has(path) || isTool) {
+    allPosts = await loadPosts(env, url);
+  }
+  if (path.startsWith('/blog/')) {
+    const slug = decodeURIComponent(path.slice('/blog/'.length).replace(/\/+$/, ''));
+    if (slug) isPost = allPosts.some((p: any) => p?.slug === slug);
+  }
+
+  if (SPA_ROUTES.has(path) || isTool || isPost) {
     const shell = await env.ASSETS.fetch(new URL('/index.html', url));
     const html = await shell.text();
     const data = await siteData(env, url);
-    return new Response(injectSeo(html, path, data), {
+    return new Response(injectSeo(html, path, data, allPosts), {
       status: shell.status,
       headers: {
         'content-type': 'text/html; charset=utf-8',
