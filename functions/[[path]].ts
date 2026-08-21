@@ -55,7 +55,12 @@ const STATIC_PREFIXES = ['/assets/', '/data/', '/admin'];
  * ad iframes, click-tracking pixels and the ad-traffic-quality beacons all live on
  * separate hosts, so a bare 'self' policy silently blocks every ad slot.
  */
+// Cloudflare Pages auto-injects its Web Analytics beacon; without this it is
+// CSP-blocked and shows up as a console error on every page load.
+const CF_BEACON_HOST = 'https://static.cloudflareinsights.com';
+
 const AD_SCRIPT_HOSTS = [
+  CF_BEACON_HOST,
   'https://pagead2.googlesyndication.com',
   'https://googleads.g.doubleclick.net',
   'https://tpc.googlesyndication.com',
@@ -81,6 +86,8 @@ const AD_IMG_HOSTS = [
 ].join(' ');
 
 const AD_CONNECT_HOSTS = [
+  CF_BEACON_HOST,
+  'https://cloudflareinsights.com',
   'https://pagead2.googlesyndication.com',
   'https://googleads.g.doubleclick.net',
   'https://tpc.googlesyndication.com',
