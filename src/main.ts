@@ -1,10 +1,12 @@
 import { fallbackData, type Link, type SiteData, type Tool } from './data';
 import './style.css';
 
-type Mode = 'home' | 'weekly' | 'tool' | 'article';
+type Mode = 'home' | 'weekly' | 'tool' | 'article' | 'privacy' | 'about' | 'contact' | 'disclaimer';
 
 const articleSlug = 'saferelay-telegram-private-chat-bot';
 const articlePath = `/blog/${articleSlug}/`;
+const contactEmail = 'liuweiqiang0523@gmail.com';
+const siteUpdated = '2026-08-21';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 const categoryLabels: Record<string, string> = {
@@ -69,6 +71,22 @@ function readRoute() {
     mode = 'weekly';
     return;
   }
+  if (path === '/privacy') {
+    mode = 'privacy';
+    return;
+  }
+  if (path === '/about') {
+    mode = 'about';
+    return;
+  }
+  if (path === '/contact') {
+    mode = 'contact';
+    return;
+  }
+  if (path === '/disclaimer') {
+    mode = 'disclaimer';
+    return;
+  }
   if (path === `/blog/${articleSlug}`) {
     mode = 'article';
     return;
@@ -85,15 +103,39 @@ function readRoute() {
   mode = 'home';
 }
 
+const PAGE_META: Record<string, { title: string; description: string }> = {
+  privacy: {
+    title: '隐私政策｜OneMJJ',
+    description: 'OneMJJ 隐私政策：说明本站收集哪些信息、Cookie 与第三方广告（Google AdSense）如何使用数据，以及你可以如何选择退出个性化广告。',
+  },
+  about: {
+    title: '关于本站｜OneMJJ',
+    description: '关于 OneMJJ：为什么做这个低维护自救中心、内容如何整理与更新、站点技术栈，以及站长是谁。',
+  },
+  contact: {
+    title: '联系我们｜OneMJJ',
+    description: '联系 OneMJJ：报告失效链接、内容纠错、合作与广告相关咨询的联系方式与响应时间。',
+  },
+  disclaimer: {
+    title: '免责声明｜OneMJJ',
+    description: 'OneMJJ 免责声明：外部链接、脚本命令、第三方服务与广告内容的责任边界说明。',
+  },
+};
+
 function updateHead() {
-  const title = mode === 'article'
+  const staticMeta = PAGE_META[mode];
+  const title = staticMeta
+    ? staticMeta.title
+    : mode === 'article'
     ? '用 SafeRelay 搭一个防骚扰 Telegram 私聊机器人｜OneMJJ'
     : mode === 'weekly'
     ? 'OneMJJ 小报｜工具、脚本与 MJJ 生存手册'
     : mode === 'tool'
       ? `${selected.name}｜OneMJJ`
       : 'OneMJJ｜一个 MJJ 的低维护自救中心';
-  const description = mode === 'article'
+  const description = staticMeta
+    ? staticMeta.description
+    : mode === 'article'
     ? 'SafeRelay 实战：用 Cloudflare Workers、KV 和 Turnstile 搭建 Telegram 私聊中转与话题工单机器人，并记录编辑同步与安全加固。'
     : mode === 'weekly'
     ? 'OneMJJ 小报：VPS、网络、自托管、脚本和低维护生存手册。'
@@ -236,6 +278,206 @@ Cloudflare Worker + KV + Turnstile
   </article>`;
 }
 
+function renderPrivacy() {
+  return `<article class="legal-page glass">
+    <a class="back" href="/" data-route>← 返回首页</a>
+    <header class="legal-header">
+      <span class="eyebrow">Privacy</span>
+      <h1>隐私政策</h1>
+      <p class="legal-lead">OneMJJ 是一个个人维护的工具导航站。这一页说明本站实际会接触到哪些数据、第三方广告如何使用 Cookie，以及你可以怎样关闭个性化广告。</p>
+      <p class="legal-updated">最后更新：${escapeHtml(siteUpdated)}</p>
+    </header>
+
+    <section><h2>一、本站自己收集什么</h2>
+      <p>OneMJJ 没有注册和登录功能，不要求你提供姓名、手机号或身份信息，也没有评论区。站点内容托管在 Cloudflare Pages 上，页面数据通过只读接口读取。</p>
+      <p>本站自身<strong>不会</strong>建立访客档案，也不会把访问记录出售或交换给第三方。你在搜索框输入的关键词只用于在浏览器本地过滤工具卡片，不会发送到服务器。</p>
+    </section>
+
+    <section><h2>二、服务器与 CDN 日志</h2>
+      <p>与所有网站一样，托管服务商 Cloudflare 会在提供服务的过程中处理必要的技术信息，包括 IP 地址、浏览器 User-Agent、请求时间和被请求的地址。这些数据用于流量分发、防御攻击和排查故障，由 Cloudflare 按其自身政策保留。</p>
+      <p>相关说明见 <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare 隐私政策 ↗</a>。</p>
+    </section>
+
+    <section><h2>三、Cookie 与本地存储</h2>
+      <p>本站功能本身只在必要时使用浏览器本地存储（例如记住深色/浅色偏好），这类数据保存在你自己的设备上，不会上传。</p>
+      <p>但本站展示第三方广告，广告服务商<strong>会</strong>在你的浏览器中写入 Cookie 或读取标识符。详见下一节。</p>
+    </section>
+
+    <section><h2>四、第三方广告（Google AdSense）</h2>
+      <p>本站使用 Google AdSense 展示广告，以覆盖域名和服务器成本。关于这项服务，你需要知道：</p>
+      <ul>
+        <li>Google 作为第三方广告服务商，会使用 Cookie 在本站投放广告。</li>
+        <li>Google 使用广告 Cookie，使其及其合作伙伴能够基于你对本站及互联网上其他网站的访问来投放广告。</li>
+        <li>Google 可能会使用 <b>DoubleClick DART Cookie</b> 或类似标识符来衡量广告效果并限制同一广告的重复展示。</li>
+        <li>本站站长<strong>无法</strong>访问、读取或导出这些 Cookie 中的数据，也无法看到任何单个访客的身份信息。</li>
+      </ul>
+      <p>你可以随时关闭个性化广告：</p>
+      <ul>
+        <li>访问 <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google 广告设置 ↗</a> 停用个性化广告。</li>
+        <li>访问 <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">aboutads.info ↗</a> 批量退出参与厂商的定向广告。</li>
+        <li>在浏览器设置中阻止第三方 Cookie，或使用浏览器的隐私模式。</li>
+      </ul>
+      <p>Google 如何在其合作伙伴网站使用数据，见 <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">Google 广告与隐私说明 ↗</a>。</p>
+    </section>
+
+    <section><h2>五、外部链接</h2>
+      <p>本站的核心功能是汇总指向第三方工具的链接（测速站、检测工具、开源项目、状态页等）。点击这些链接后，你就离开了 OneMJJ，对方网站如何处理你的数据由其自身隐私政策决定，本站无法控制也不承担责任。建议在使用敏感工具前先阅读对方的政策。</p>
+    </section>
+
+    <section><h2>六、儿童隐私</h2>
+      <p>本站内容面向服务器运维、自托管和网络工具的使用者，不面向 13 岁以下的儿童，也不会有意收集儿童的个人信息。</p>
+    </section>
+
+    <section><h2>七、你的权利与联系方式</h2>
+      <p>由于本站不建立用户账户、不保存可识别到个人的资料，通常没有可供导出或删除的个人数据。如果你对本站的数据处理有疑问，或希望反映与广告相关的问题，可以通过 <a href="/contact/" data-route>联系页面</a> 与我沟通。</p>
+    </section>
+
+    <section><h2>八、政策更新</h2>
+      <p>本政策可能随站点功能或所用第三方服务的变化而更新。更新后会同步修改本页顶部的“最后更新”日期，重大变化会在首页说明。继续使用本站即表示你接受更新后的政策。</p>
+    </section>
+  </article>`;
+}
+
+function renderAbout() {
+  const toolCount = siteData.tools.length;
+  const linkCount = siteData.tools.reduce((sum, tool) => sum + (tool.links?.length ?? 0), 0);
+  const cmdCount = siteData.tools.reduce((sum, tool) => sum + (tool.commands?.length ?? 0), 0);
+  return `<article class="legal-page glass">
+    <a class="back" href="/" data-route>← 返回首页</a>
+    <header class="legal-header">
+      <span class="eyebrow">About</span>
+      <h1>关于本站</h1>
+      <p class="legal-lead">OneMJJ 是一个人维护的“低维护自救中心”：把买过的鸡、踩过的坑、验证过的工具和还能跑的脚本收进一个双端都好用的工具台。</p>
+      <p class="legal-updated">最后更新：${escapeHtml(siteUpdated)}</p>
+    </header>
+
+    <section><h2>为什么做这个站</h2>
+      <p>玩 VPS 和自托管的人多半有同一个问题：常用工具散落在浏览器书签、聊天记录、笔记软件和几十个收藏夹里。换设备就断档，链接挂了也不知道。</p>
+      <p>OneMJJ 的目标不是做一个“大而全”的导航站，而是<strong>只收自己真正用过、并且还能打开的东西</strong>。每一条链接都是我自己排障时点过的；每一条命令都是我在自己机器上跑过的。用不上的、失效的、需要注册一堆账号才能看的，都不放进来。</p>
+    </section>
+
+    <section><h2>现在有什么</h2>
+      <div class="about-stats">
+        <div><b>${toolCount}</b><span>工具栏目</span></div>
+        <div><b>${linkCount}</b><span>外部链接</span></div>
+        <div><b>${cmdCount}</b><span>速查命令</span></div>
+      </div>
+      <p>栏目按实际排障顺序划分：<b>VPS 检测</b>（买鸡后先看性能和路由）、<b>三网延迟</b>与<b>网络工具</b>（判断是本地、运营商还是目标服务的问题）、<b>自托管与访问</b>、<b>PT 与媒体</b>、<b>AI 与 API</b>、<b>常用脚本</b>、<b>MJJ 笔记</b>和<b>状态页</b>。</p>
+      <p>另外还有一份 <a href="/weekly/" data-route>OneMJJ 小报</a>，用来沉淀不适合塞进工具卡片的长内容：促销观察、踩坑记录和长期维护经验。</p>
+    </section>
+
+    <section><h2>内容怎么维护</h2>
+      <p>站点数据存放在 Cloudflare KV 中，通过一个受保护的后台控制台维护，改完即时生效、无需重新部署。这样做的原因很直接：如果更新一条链接要走一次完整构建，我大概就不会更新了。</p>
+      <p>失效链接依靠日常使用发现，也欢迎读者通过<a href="/contact/" data-route>联系页</a>告诉我。脚本类内容只提供复制按钮，<strong>永远不会自动执行</strong>。</p>
+    </section>
+
+    <section><h2>技术栈</h2>
+      <p>纯静态前端 + 边缘函数，没有传统服务器，也没有数据库：</p>
+      <ul>
+        <li><b>Cloudflare Pages</b> — 静态资源托管与全球分发</li>
+        <li><b>Pages Functions</b> — 路由处理、真实 404、后台接口</li>
+        <li><b>Cloudflare KV</b> — 内容存储，后台改完即时生效</li>
+        <li><b>Vite + TypeScript</b> — 构建与前端逻辑，无框架依赖</li>
+        <li><b>GitHub Actions</b> — 推送到 main 自动部署</li>
+      </ul>
+      <p>选这套组合的唯一理由是“低维护”：不用打补丁、不用续费服务器、不用半夜起来重启。</p>
+    </section>
+
+    <section><h2>关于站长</h2>
+      <p>一个折腾服务器、自托管服务和小工具的普通用户。除了这个站，还写<a href="https://blog.onemjj.com" target="_blank" rel="noopener">一个技术博客</a>记录具体的部署与排障过程，也在 GitHub 上维护几个个人分支项目。</p>
+      <p>本站运营成本（域名、部分服务）由广告收入部分覆盖。广告不会影响工具的收录与排序——收什么、放在哪，只取决于我自己用不用得上。</p>
+    </section>
+  </article>`;
+}
+
+function renderContact() {
+  return `<article class="legal-page glass">
+    <a class="back" href="/" data-route>← 返回首页</a>
+    <header class="legal-header">
+      <span class="eyebrow">Contact</span>
+      <h1>联系我们</h1>
+      <p class="legal-lead">链接挂了、内容写错了、想提个工具，或者有广告与合作相关的事情，都可以直接发邮件。</p>
+      <p class="legal-updated">最后更新：${escapeHtml(siteUpdated)}</p>
+    </header>
+
+    <section class="contact-card">
+      <h2>电子邮件</h2>
+      <p class="contact-email"><a href="mailto:${escapeHtml(contactEmail)}">${escapeHtml(contactEmail)}</a></p>
+      <p>这是本站唯一的官方联系邮箱，由站长本人查看。通常在 <b>1–3 个工作日</b>内回复；遇到出差或忙碌时可能稍慢，但不会不回。</p>
+    </section>
+
+    <section><h2>写邮件前请看一眼</h2>
+      <p>为了让我能真正帮上忙，麻烦在邮件里说明这几点：</p>
+      <ul>
+        <li><b>报告失效链接：</b>请附上出问题的页面地址和那条链接的名称。有些工具站会屏蔽特定地区或对爬虫返回 403，换个网络环境往往就能打开，所以也请说明你大致的网络环境。</li>
+        <li><b>内容纠错：</b>请指出具体是哪一条命令或哪一句描述，以及正确的写法。命令类纠错我会在自己机器上复现后再改。</li>
+        <li><b>推荐工具：</b>请说明它解决什么问题、你自己用了多久。本站只收实际验证过的工具，所以“看起来不错”的链接我一般不会直接加。</li>
+        <li><b>广告与合作：</b>本站通过 Google AdSense 展示广告。<strong>不接受</strong>付费收录、软文、外链买卖和刷量合作——这类邮件恕不回复。</li>
+      </ul>
+    </section>
+
+    <section><h2>其他去处</h2>
+      <ul>
+        <li><b>技术博客：</b><a href="https://blog.onemjj.com" target="_blank" rel="noopener">blog.onemjj.com ↗</a> — 具体的部署过程与排障记录</li>
+        <li><b>站点状态：</b><a href="/tools/status/" data-route>状态页栏目</a> — 服务可用性自查入口</li>
+        <li><b>隐私相关：</b>涉及数据与广告 Cookie 的问题，可先看<a href="/privacy/" data-route>隐私政策</a></li>
+      </ul>
+    </section>
+
+    <section><h2>关于回复</h2>
+      <p>这是个人站点，不是公司，没有客服团队。我不提供付费技术支持，也没法代你排查自己服务器上的具体故障——但如果是本站内容的问题，我会认真处理。</p>
+    </section>
+  </article>`;
+}
+
+function renderDisclaimer() {
+  return `<article class="legal-page glass">
+    <a class="back" href="/" data-route>← 返回首页</a>
+    <header class="legal-header">
+      <span class="eyebrow">Disclaimer</span>
+      <h1>免责声明</h1>
+      <p class="legal-lead">本站汇总的是第三方工具与命令，使用它们的后果由使用者自行承担。这一页把责任边界写清楚。</p>
+      <p class="legal-updated">最后更新：${escapeHtml(siteUpdated)}</p>
+    </header>
+
+    <section><h2>一、内容性质</h2>
+      <p>本站内容仅供技术参考和学习交流，<strong>不构成任何专业建议</strong>。所有信息按“现状”提供，不对其准确性、时效性或适用性作任何明示或默示的保证。工具会更新，服务商会改政策，命令会过时——请在使用前自行验证。</p>
+    </section>
+
+    <section><h2>二、外部链接</h2>
+      <p>本站收录的链接指向独立运营的第三方网站与项目。本站不拥有、不控制、不运营这些服务，对其内容、可用性、安全性与隐私做法不承担责任。链接的存在<strong>不代表</strong>本站对该服务的背书。</p>
+      <p>第三方服务可能随时下线、变更收费方式或调整可用地区。发现失效欢迎<a href="/contact/" data-route>告知</a>。</p>
+    </section>
+
+    <section><h2>三、命令与脚本（重要）</h2>
+      <p>本站的脚本速查功能<strong>只提供复制按钮，不会自动执行任何命令</strong>。但你需要明白：</p>
+      <ul>
+        <li>命令在你的机器上以你的权限运行，可能修改配置、安装软件、产生流量费用，甚至造成数据丢失。</li>
+        <li><strong>运行前请先读懂它，并核对来源。</strong>尤其是任何形式的 <code>curl ... | sh</code>，务必先把脚本下载下来看一遍再执行。</li>
+        <li>请优先在测试环境验证，重要数据请先备份。</li>
+        <li>因执行本站列出的命令而造成的任何直接或间接损失，本站不承担责任。</li>
+      </ul>
+    </section>
+
+    <section><h2>四、合规使用</h2>
+      <p>请在所在地法律法规和各服务商的服务条款允许的范围内使用本站列出的工具。涉及网络检测、媒体资源和自托管服务时，使用者应自行确认其行为的合法性。本站不鼓励也不支持任何违法用途。</p>
+    </section>
+
+    <section><h2>五、广告内容</h2>
+      <p>本站通过 Google AdSense 展示广告。广告内容由 Google 及其广告主提供，<strong>不经本站审核，也不代表本站立场</strong>。本站不对广告中宣传的产品或服务的质量、真实性负责。如果你看到明显违规的广告，欢迎<a href="/contact/" data-route>告知</a>，我会向 Google 反馈。</p>
+      <p>广告收入用于覆盖域名与服务成本，不影响工具的收录与排序。</p>
+    </section>
+
+    <section><h2>六、可用性</h2>
+      <p>本站为个人项目，不承诺持续可用，也不提供服务等级保证。站点可能因维护、服务商故障或其他原因中断。</p>
+    </section>
+
+    <section><h2>七、版权</h2>
+      <p>本站原创的文字与页面设计版权归站长所有。收录的第三方工具名称、商标与内容归其各自权利人所有，本站仅作索引与说明之用。如认为本站内容侵犯了你的权益，请通过<a href="/contact/" data-route>联系页</a>说明，我会在核实后及时处理。</p>
+    </section>
+  </article>`;
+}
+
 function renderLinks(links: Link[]) {
   const validLinks = links
     .map(link => ({ ...link, safeUrl: safeExternalUrl(link.url) }))
@@ -256,10 +498,33 @@ function navLink(path: string, label: string, isActive: boolean) {
   return `<a href="${path}" data-route ${isActive ? 'class="active" aria-current="page"' : ''}>${label}</a>`;
 }
 
+const PAGE_RENDERERS: Record<string, () => string> = {
+  privacy: renderPrivacy,
+  about: renderAbout,
+  contact: renderContact,
+  disclaimer: renderDisclaimer,
+};
+
+function siteFooter() {
+  return `<footer class="site-footer">
+    <nav class="footer-links" aria-label="站点信息">
+      <a href="/about/" data-route>关于本站</a>
+      <a href="/contact/" data-route>联系我们</a>
+      <a href="/privacy/" data-route>隐私政策</a>
+      <a href="/disclaimer/" data-route>免责声明</a>
+    </nav>
+    <p class="footer-tagline">OneMJJ · 少踩坑，多留传家宝 · Public tools first.</p>
+    <p class="footer-note">本站收录的工具由第三方运营，命令请在理解后自行执行。站内展示 Google AdSense 广告。</p>
+  </footer>`;
+}
+
 function render() {
   updateHead();
-  const content = mode === 'home' ? renderHome() : mode === 'weekly' ? renderWeekly() : mode === 'article' ? renderArticle() : renderTool();
-  app.innerHTML = `<nav class="top" aria-label="主导航"><a class="brand" href="/" data-route>OneMJJ</a><div>${navLink('/', '首页', mode === 'home' || mode === 'tool')}<a href="${articlePath}" data-route ${mode === 'article' ? 'class="active" aria-current="page"' : ''}>文章</a><a class="nav-admin" href="/admin/" rel="nofollow">控制台</a>${navLink('/weekly/', '小报', mode === 'weekly')}</div></nav><main>${content}</main><footer>OneMJJ · 少踩坑，多留传家宝 · Public tools first.</footer>`;
+  const pageRenderer = PAGE_RENDERERS[mode];
+  const content = pageRenderer
+    ? pageRenderer()
+    : mode === 'home' ? renderHome() : mode === 'weekly' ? renderWeekly() : mode === 'article' ? renderArticle() : renderTool();
+  app.innerHTML = `<nav class="top" aria-label="主导航"><a class="brand" href="/" data-route>OneMJJ</a><div>${navLink('/', '首页', mode === 'home' || mode === 'tool')}<a href="${articlePath}" data-route ${mode === 'article' ? 'class="active" aria-current="page"' : ''}>文章</a><a class="nav-admin" href="/admin/" rel="nofollow">控制台</a>${navLink('/weekly/', '小报', mode === 'weekly')}</div></nav><main>${content}</main>${siteFooter()}`;
   bind();
 }
 
