@@ -1,5 +1,6 @@
 import { fallbackData, type Link, type Post, type SiteData, type Tool } from './data';
 import { renderMarkdown, markdownToText } from './markdown';
+import { renderToolGuide } from './tool-guides';
 import './style.css';
 
 type Mode = 'home' | 'weekly' | 'tool' | 'article' | 'privacy' | 'about' | 'contact' | 'disclaimer' | 'blog' | 'post';
@@ -576,6 +577,7 @@ function renderTool() {
     <a class="back" href="/" data-route>← 返回首页</a>
     <div class="detail-hero"><div><span class="big-icon" aria-hidden="true">${escapeHtml(selected.icon)}</span><h1>${escapeHtml(selected.name)}</h1><p>${escapeHtml(selected.body)}</p></div><aside><span class="eyebrow">${escapeHtml(categoryLabels[selected.category] ?? selected.category)}</span><b>公共工具</b><small>${escapeHtml(selected.desc)}</small></aside></div>
     <div class="detail-grid"><section><h2>可打开的链接</h2>${renderLinks(selected.links)}</section><section><h2>命令速查</h2>${selected.commands?.length ? `<div class="script-list single">${selected.commands.map(command => `<article class="script"><b>运行前请核对</b><code>${escapeHtml(command)}</code><div><button type="button" data-copy="${escapeHtml(command)}">复制命令</button></div></article>`).join('')}</div>` : '<p class="muted">这个栏目暂时没有命令。</p>'}</section></div>
+    ${renderToolGuide(selected.id)}
   </section>`;
 }
 

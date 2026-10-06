@@ -1,4 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+const guides: Record<string, { audience: string; workflow: string[]; reading: string[]; pitfalls: string[]; safety: string[]; maintainer: string }> = JSON.parse(readFileSync(new URL('../../src/tool-guides.json', import.meta.url), 'utf8'));
+for (const [id, guide] of Object.entries(guides)) test(`original guide survives SPA hydration: ${id}`, async ({ page }) => {
+ await page.goto('/tools/' + id + '/');
+ const section = page.getByRole('region', { name: '使用指南' });
+ await expect(section).toBeVisible();
+ for (const text of [guide.audience, ...guide.workflow, ...guide.reading, ...guide.pitfalls, ...guide.safety, guide.maintainer]) await expect(section).toContainText(text);
+ await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/tools\/[^/]+\/$/);
+});
 test('search, category filter, clipboard and primary navigation work', async ({ page, context, baseURL }) => {
  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: baseURL });
  await page.goto('/');

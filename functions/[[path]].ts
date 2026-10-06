@@ -17,6 +17,7 @@
  */
 
 import { renderMarkdown } from '../src/markdown';
+import { renderToolGuide } from '../src/tool-guides';
 import { refreshPublicContent } from '../src/content-refresh';
 
 const articleSlug = 'saferelay-telegram-private-chat-bot';
@@ -414,6 +415,7 @@ ${noscriptFooter()}`;
 <p>${esc(toolMatch.desc)}</p>
 <p>${esc(toolMatch.body)}</p>
 <p>分类：${esc(CATEGORY_LABELS[toolMatch.category] ?? toolMatch.category)}</p>
+${renderToolGuide(toolMatch.id)}
 ${links.length ? `<h2>可打开的链接</h2><ul>${links.map((l: any) => `<li><a href="${esc(l.url)}" rel="noopener noreferrer">${esc(l.label)}</a>${l.note ? ` — ${esc(l.note)}` : ''}</li>`).join('')}</ul>` : ''}
 ${cmds.length ? `<h2>命令速查</h2><ul>${cmds.map((c: string) => `<li><code>${esc(c)}</code></li>`).join('')}</ul><p>命令仅供复制，运行前请核对来源并读懂内容。</p>` : ''}
 <p><a href="/">返回 OneMJJ 首页</a></p>
@@ -454,10 +456,39 @@ ${allPosts.length ? `<h2>精选实战</h2><p>人工精选，不按发布日期�
 ${noscriptFooter()}`;
 }
 
+/** Restore route metadata for text-only clients as well as the hydrated SPA. */
+function injectHead(html: string, path: string, data: any, posts: any[]): string {
+  const clean = path.replace(/\/+$/, '') || '/';
+  const tool = clean.startsWith('/tools/') ? data.tools?.find((t: any) => t.id === decodeURIComponent(clean.slice(7))) : null;
+  const post = clean.startsWith('/blog/') ? posts.find((p: any) => p.slug === decodeURIComponent(clean.slice(6))) : null;
+  const titles: Record<string, string> = {
+    '/': 'OneMJJ｜一个 MJJ 的低维护自救中心',
+    '/weekly': 'OneMJJ 小报｜工具、脚本与 MJJ 生存手册',
+    '/blog': '文章归档｜OneMJJ',
+    '/privacy': '隐私政策｜OneMJJ', '/about': '关于本站｜OneMJJ',
+    '/contact': '联系我们｜OneMJJ', '/disclaimer': '免责声明｜OneMJJ',
+  };
+  const title = tool ? `${tool.name}｜OneMJJ` : post ? `${post.title}｜OneMJJ` : titles[clean];
+  const canonical = `https://onemjj.com${clean === '/' ? '/' : clean + '/'}`;
+  if (title) {
+    html = html.replace(/<title>[^<]*<\/title>/, () => `<title>${esc(title)}</title>`)
+      .replace(/(<meta (?:property="og:title"|name="twitter:title") content=")[^"]*("\s*\/?>)/g, (_match, before, after) => before + esc(title) + after);
+  }
+  html = html.replace(/(<link rel="canonical" href=")[^"]*("\s*\/?>)/, (_match, before, after) => before + esc(canonical) + after)
+    .replace(/(<meta property="og:url" content=")[^"]*("\s*\/?>)/, (_match, before, after) => before + esc(canonical) + after);
+  const descriptions: Record<string, string> = {
+    '/weekly': 'OneMJJ 小报：VPS、网络、自托管、脚本和低维护生存手册。',
+    '/blog': 'OneMJJ 文章归档：自托管、Telegram 机器人、Cloudflare 边缘部署与 AI 网关的实战记录与踩坑笔记。',
+  };
+  const description = tool ? `${tool.name}：${tool.desc}。${tool.body}` : post?.excerpt || descriptions[clean];
+  if (description) html = html.replace(/(<meta (?:name="description"|property="og:description"|name="twitter:description") content=")[^"]*("\s*\/?>)/g, (_match, before, after) => before + esc(description) + after);
+  return html;
+}
+
 /** Inject crawler-visible markup into the SPA shell's #app container. */
 function injectSeo(html: string, path: string, data: any, allPosts: any[] = []): string {
   const content = seoContent(path, data, allPosts);
-  return html.replace(
+  return injectHead(html, path, data, allPosts).replace(
     '<div id="app"></div>',
     `<div id="app"><div id="seo-content">${content}</div></div>`,
   );
