@@ -12,6 +12,8 @@ on:
       - "wrangler.toml"
       - "package.json"
       - "pnpm-lock.yaml"
+      - "tests/**"
+      - "tsconfig.json"
       - ".github/workflows/deploy-cf.yml"
   workflow_dispatch:
 
@@ -44,6 +46,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Test and typecheck
+        run: pnpm test && pnpm typecheck
 
       - name: Build
         run: pnpm build

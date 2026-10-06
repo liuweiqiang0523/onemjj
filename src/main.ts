@@ -227,11 +227,11 @@ function renderHome() {
       <div class="actions"><a class="primary-link" href="#tools">开始使用</a><a class="ghost-link" href="/weekly/" data-route>看 MJJ 小报</a>${heroLinks().map(link => `<a class="ghost-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.label)}</a>`).join('')}</div>
     </div>
     <aside class="status-card" aria-label="站点信息">
-      <b>站点进度</b>
-      <div><span class="dot ok"></span>onemjj.com 正常在线</div>
-      <div><span class="dot ok"></span>公开工具与小报可用</div>
-      <div><span class="dot ok"></span>内容可在控制台维护</div>
-      <code>Cloudflare Pages · Edge</code>
+      <b>本站提供什么</b>
+      <div>工具目录与命令速查</div>
+      <div>精选实战与历史小报</div>
+      <div>VPS、自托管与 AI 排障笔记</div>
+      <code>内容介绍 · 非实时可用性监测</code>
     </aside>
   </section>
   <section class="toolbar" id="tools">
@@ -240,7 +240,7 @@ function renderHome() {
   </section>
   ${tools.length ? `<section class="grid tools-grid" aria-live="polite">${tools.map(toolCard).join('')}</section>` : '<section class="empty glass">没有找到匹配的工具，换个关键词试试。</section>'}
   ${posts.length ? `<section class="home-posts">
-    <div class="home-posts-head"><div><span class="eyebrow">Notes</span><h2>实战记录</h2><p>自托管、Telegram 机器人、边缘部署和 AI 网关的踩坑笔记。</p></div><a class="ghost-link" href="/blog/" data-route>全部文章 →</a></div>
+    <div class="home-posts-head"><div><span class="eyebrow">Notes</span><h2>精选实战</h2><p>人工精选的自托管、Telegram 机器人、边缘部署与 AI 网关笔记，不按发布日期排名。</p></div><a class="ghost-link" href="/blog/" data-route>全部文章 →</a></div>
     <div class="post-list">${posts.slice(0, 3).map(postCard).join('')}</div>
   </section>` : ''}
   <section id="scripts" class="scripts glass">
@@ -260,6 +260,7 @@ function renderWeekly() {
   const displayDate = weekly.date.replaceAll('-', '.');
   return `<section class="weekly">
     <header><div><span class="issue-label">ONE MJJ WEEKLY</span><h1>OneMJJ 小报</h1><p>一个 MJJ 的赛博杂物间：工具、脚本、行情和生存手册。</p></div><code>ISSUE ${escapeHtml(weekly.issue)}<br/><time datetime="${escapeHtml(weekly.date)}">${escapeHtml(displayDate)}</time></code></header>
+    <p class="archive-notice">${escapeHtml(weekly.archiveNotice ?? '历史刊归档；原发布日期尚未核实。')} 本次仅修正文案；最后更新：${escapeHtml(weekly.updated ?? '2026-10-06')}，未重新实测历史优惠或服务状态。</p>
     <article class="headline"><span>${escapeHtml(weekly.headlineTag)}</span><h2>${escapeHtml(weekly.headlineTitle)}</h2><p>${escapeHtml(weekly.headlineBody)}</p></article>
     <div class="grid tools-grid paper">${siteData.tools.slice(0, 8).map(toolCard).join('')}</div>
     <div class="notes">${siteData.notes.map(note => {
@@ -598,9 +599,10 @@ function siteFooter() {
       <a href="/contact/" data-route>联系我们</a>
       <a href="/privacy/" data-route>隐私政策</a>
       <a href="/disclaimer/" data-route>免责声明</a>
+      <a href="/admin/" rel="nofollow">站长后台</a>
     </nav>
-    <p class="footer-tagline">OneMJJ · 少踩坑，多留传家宝 · Public tools first.</p>
-    <p class="footer-note">本站收录的工具由第三方运营，命令请在理解后自行执行。站内展示 Google AdSense 广告。</p>
+    <p class="footer-tagline">OneMJJ · VPS、自托管与 AI 工具的实测笔记。少踩坑，多留传家宝。</p>
+    <p class="footer-note">部分工具由第三方运营；本站命令仅供复制，不会自动执行。运行前请核对环境、阅读源码并备份重要数据。本站可能展示 Google AdSense 广告，详见<a href="/privacy/" data-route>隐私政策</a>。</p>
   </footer>`;
 }
 
@@ -610,7 +612,7 @@ function render() {
   const content = pageRenderer
     ? pageRenderer()
     : mode === 'home' ? renderHome() : mode === 'weekly' ? renderWeekly() : mode === 'article' ? renderArticle() : renderTool();
-  app.innerHTML = `<nav class="top" aria-label="主导航"><a class="brand" href="/" data-route>OneMJJ</a><div>${navLink('/', '首页', mode === 'home' || mode === 'tool')}${navLink('/blog/', '文章', mode === 'blog' || mode === 'post' || mode === 'article')}<a class="nav-admin" href="/admin/" rel="nofollow">控制台</a>${navLink('/weekly/', '小报', mode === 'weekly')}</div></nav><main>${content}</main>${siteFooter()}`;
+  app.innerHTML = `<nav class="top" aria-label="主导航"><a class="brand" href="/" data-route>OneMJJ</a><div>${navLink('/', '首页', mode === 'home' || mode === 'tool')}${navLink('/blog/', '站内文章', mode === 'blog' || mode === 'post' || mode === 'article')}${navLink('/weekly/', '小报', mode === 'weekly')}</div></nav><main>${content}</main>${siteFooter()}`;
   bind();
 }
 

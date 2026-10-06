@@ -1,1 +1,24 @@
-{"name": "onemjj-site", "version": "0.2.3", "private": true, "type": "module", "scripts": {"dev": "vite --host 0.0.0.0", "build": "vite build", "preview": "vite preview --host 0.0.0.0"}, "dependencies": {"@vitejs/plugin-basic-ssl": "latest", "vite": "latest", "typescript": "latest"}, "devDependencies": {}}
+{
+  "name": "onemjj-site",
+  "version": "0.2.3",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@vitejs/plugin-basic-ssl": "latest",
+    "typescript": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15"
+  }
+}

@@ -17,6 +17,7 @@
  */
 
 import { renderMarkdown } from '../src/markdown';
+import { refreshPublicContent } from '../src/content-refresh';
 
 const articleSlug = 'saferelay-telegram-private-chat-bot';
 
@@ -182,7 +183,10 @@ async function siteData(env: any, url: URL): Promise<any> {
       data = null;
     }
   }
-  if (data) dataCache = { at: now, data };
+  if (data) {
+    data = refreshPublicContent(data);
+    dataCache = { at: now, data };
+  }
   return data ?? { tools: [], scripts: [], notes: [] };
 }
 
@@ -280,8 +284,9 @@ const esc = (value: unknown) => String(value ?? '')
 
 /** Shared footer so crawler-visible markup mirrors the client-rendered nav. */
 function noscriptFooter(): string {
-  return `<nav aria-label="站点信息"><a href="/about/">关于本站</a> · <a href="/contact/">联系我们</a> · <a href="/privacy/">隐私政策</a> · <a href="/disclaimer/">免责声明</a></nav>
-<p>OneMJJ · 少踩坑，多留传家宝 · Public tools first.</p>`;
+  return `<nav aria-label="站点信息"><a href="/about/">关于本站</a> · <a href="/contact/">联系我们</a> · <a href="/privacy/">隐私政策</a> · <a href="/disclaimer/">免责声明</a> · <a href="/admin/" rel="nofollow">站长后台</a></nav>
+<p>OneMJJ · VPS、自托管与 AI 工具的实测笔记。少踩坑，多留传家宝。</p>
+<p>部分工具由第三方运营；本站命令仅供复制，不会自动执行。运行前请核对环境、阅读源码并备份重要数据。本站可能展示 Google AdSense 广告，详见<a href="/privacy/">隐私政策</a>。</p>`;
 }
 
 /**
@@ -418,6 +423,7 @@ ${noscriptFooter()}`;
   if (clean === '/weekly') {
     const w = data?.weekly ?? {};
     return `<h1>OneMJJ 小报</h1>
+<p>${esc(w.archiveNotice ?? '历史刊归档；原发布日期尚未核实。')} 本次仅修正文案；最后更新：${esc(w.updated ?? '2026-10-06')}，未重新实测历史优惠或服务状态。</p>
 <p>一个 MJJ 的赛博杂物间：工具、脚本、行情和生存手册。</p>
 ${w.headlineTitle ? `<h2>${esc(w.headlineTitle)}</h2><p>${esc(w.headlineBody ?? '')}</p>` : ''}
 ${tools.length ? `<h2>本期工具</h2><ul>${tools.slice(0, 8).map((t: any) => `<li><a href="/tools/${esc(t.id)}/">${esc(t.name)}</a> — ${esc(t.desc)}</li>`).join('')}</ul>` : ''}
@@ -442,7 +448,7 @@ ${Array.from(byCategory.entries()).map(([category, items]) => `<h3>${esc(CATEGOR
     return `<li><a href="/tools/${esc(t.id)}/">${esc(t.name)}</a> — ${esc(t.desc)}。${esc(t.body ?? '')}${links.length ? ` 收录链接：${links.map((l: any) => esc(l.label)).join('、')}。` : ''}</li>`;
   }).join('')}</ul>`).join('')}
 ${scripts.length ? `<h2>脚本速查</h2><ul>${scripts.map((s: any) => `<li>${esc(s.title)}：<code>${esc(s.cmd)}</code></li>`).join('')}</ul><p>脚本只负责复制，不会自动执行。运行前请先查看来源并读懂命令。</p>` : ''}
-${allPosts.length ? `<h2>实战记录</h2><ul>${allPosts.slice(0, 6).map((p: any) => `<li><a href="/blog/${esc(p.slug)}/">${esc(p.title)}</a> — ${esc(p.excerpt ?? '')}</li>`).join('')}</ul><p><a href="/blog/">查看全部 ${allPosts.length} 篇文章</a></p>` : ''}
+${allPosts.length ? `<h2>精选实战</h2><p>人工精选，不按发布日期排名。</p><ul>${allPosts.slice(0, 3).map((p: any) => `<li><a href="/blog/${esc(p.slug)}/">${esc(p.title)}</a> — ${esc(p.excerpt ?? '')}</li>`).join('')}</ul><p><a href="/blog/">查看全部 ${allPosts.length} 篇站内文章</a></p>` : ''}
 <h2>OneMJJ 小报</h2>
 <p>除了工具台，本站还维护一份 <a href="/weekly/">OneMJJ 小报</a>，沉淀促销观察、踩坑记录和长期维护经验。</p>
 ${noscriptFooter()}`;

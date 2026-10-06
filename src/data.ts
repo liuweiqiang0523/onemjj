@@ -27,6 +27,8 @@ export type Post = {
   origin?: string;
 };
 export type Weekly = {
+  archiveNotice?: string;
+  updated?: string;
   issue: string;
   date: string;
   headlineTag: string;
