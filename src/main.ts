@@ -581,8 +581,8 @@ function renderTool() {
   </section>`;
 }
 
-function navLink(path: string, label: string, isActive: boolean) {
-  return `<a href="${path}" data-route ${isActive ? 'class="active" aria-current="page"' : ''}>${label}</a>`;
+function navLink(path: string, label: string, isActive: boolean, spa = true) {
+  return `<a href="${path}" ${spa ? 'data-route' : 'rel="nofollow"'} ${isActive ? 'class="active" aria-current="page"' : ''}>${label}</a>`;
 }
 
 const PAGE_RENDERERS: Record<string, () => string> = {
@@ -614,7 +614,7 @@ function render() {
   const content = pageRenderer
     ? pageRenderer()
     : mode === 'home' ? renderHome() : mode === 'weekly' ? renderWeekly() : mode === 'article' ? renderArticle() : renderTool();
-  app.innerHTML = `<nav class="top" aria-label="主导航"><a class="brand" href="/" data-route>OneMJJ</a><div>${navLink('/', '首页', mode === 'home' || mode === 'tool')}${navLink('/blog/', '站内文章', mode === 'blog' || mode === 'post' || mode === 'article')}${navLink('/weekly/', '小报', mode === 'weekly')}</div></nav><main>${content}</main>${siteFooter()}`;
+  app.innerHTML = `<nav class="top" aria-label="主导航"><a class="brand" href="/" data-route>OneMJJ</a><div>${navLink('/', '首页', mode === 'home' || mode === 'tool')}${navLink('/blog/', '站内文章', mode === 'blog' || mode === 'post' || mode === 'article')}${navLink('/weekly/', '小报', mode === 'weekly')}${navLink('/admin/', '控制台', false, false)}</div></nav><main>${content}</main>${siteFooter()}`;
   bind();
 }
 
