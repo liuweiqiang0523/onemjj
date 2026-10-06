@@ -19,6 +19,16 @@ test('every tool preserves all recovered original guidance in crawler HTML', asy
   for (const text of [guide.audience, ...guide.workflow, ...guide.reading, ...guide.pitfalls, ...guide.safety, guide.maintainer]) assert.ok(html.includes(esc(text)), id + ': ' + text);
  }
 });
+test('SSR serves evidence, feedback, TOC and original date for all content', async () => {
+ for (const tool of data.tools) {
+  const html=await page('/tools/'+tool.id+'/');
+  for(const text of ['核验信息','适用环境','费用','unknown','内容反馈','mailto:liuweiqiang0523@gmail.com']) assert.ok(html.includes(text),tool.id+': '+text);
+ }
+ for(const post of [...posts,{slug:'saferelay-telegram-private-chat-bot',date:'2026-07-26'}]) {
+  const html=await page('/blog/'+post.slug+'/');
+  assert.ok(html.includes('首次发布'));assert.ok(html.includes(post.date));assert.ok(html.includes('实质更新'));assert.ok(html.includes('适用版本'));assert.ok(html.includes('aria-label="本页目录"'));
+ }
+});
 test('server HTML has route-specific title and canonical without running JavaScript', async () => {
  for (const [path,title] of [['/','OneMJJ｜一个 MJJ 的低维护自救中心'],['/weekly/','OneMJJ 小报｜工具、脚本与 MJJ 生存手册'],['/tools/ai-api/','AI & API｜OneMJJ'],['/blog/','文章归档｜OneMJJ'],['/about/','关于本站｜OneMJJ'], ...posts.map((p: any) => ['/blog/'+p.slug+'/',p.title+'｜OneMJJ'])]) {
   const html = await page(path);

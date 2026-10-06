@@ -1,0 +1,29 @@
+name: Check public links
+on:
+  schedule:
+    - cron: '21 3 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: onemjj-public-links
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read public links including current KV content
+        run: node scripts/check-links.mjs
+      - name: Retain report for manual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-link-report
+          path: reports/public-links.*
+          retention-days: 30
+          if-no-files-found: error

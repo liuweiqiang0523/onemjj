@@ -24,6 +24,8 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(-
 .top>div a{display:block;text-decoration:none;border-radius:999px;padding:9px 13px;color:var(--nav-link);white-space:nowrap}
 .top>div a.active,.top>div a:hover{background:var(--surface-hover);color:var(--ink);box-shadow:0 10px 30px rgba(20,30,60,.08)}
 .top .nav-admin{color:var(--muted)}
+@media(max-width:600px){.top{flex-direction:column;align-items:stretch;gap:8px}.top .brand{display:block;align-self:flex-start}.top>div{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:0;overflow:visible}.top>div a{text-align:center;min-width:0;padding:9px 0}}
+.verification,.feedback,.post-evidence{margin-top:24px;padding:20px;background:var(--surface-2);border:1px solid var(--line);border-radius:20px;overflow-wrap:anywhere;line-height:1.75}.feedback pre{white-space:pre-wrap;overflow-wrap:anywhere}.feedback button{padding:12px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.search-results{margin:20px 0}.search-results a{overflow-wrap:anywhere}
 main{max-width:1320px;margin:auto;padding:28px}
 .glass{background:var(--paper);border:1px solid var(--glass-border);box-shadow:var(--shadow);backdrop-filter:blur(24px);border-radius:30px}
 .hero{display:grid;grid-template-columns:minmax(0,1.15fr) 360px;gap:20px;padding:34px}

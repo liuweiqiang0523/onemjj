@@ -50,6 +50,13 @@ jobs:
       - name: Test and typecheck
         run: pnpm test && pnpm typecheck
 
+      - name: Browser regression
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          pnpm build
+          node tests/preview.mjs &
+          pnpm test:browser
+
       - name: Build
         run: pnpm build
 

@@ -19,7 +19,9 @@
 import { renderMarkdown } from '../src/markdown';
 import { renderToolGuide } from '../src/tool-guides';
 import { refreshPublicContent } from '../src/content-refresh';
+import { renderVerification, renderFeedback, renderPostEvidence, renderToc } from '../src/content-evidence';
 
+import { renderLegacyArticle, legacyArticleTitle } from '../src/legacy-article';
 const articleSlug = 'saferelay-telegram-private-chat-bot';
 
 const SPA_ROUTES = new Set([
@@ -286,7 +288,7 @@ const esc = (value: unknown) => String(value ?? '')
 /** Shared footer so crawler-visible markup mirrors the client-rendered nav. */
 function noscriptFooter(): string {
   return `<nav aria-label="站点信息"><a href="/about/">关于本站</a> · <a href="/contact/">联系我们</a> · <a href="/privacy/">隐私政策</a> · <a href="/disclaimer/">免责声明</a> · <a href="/admin/" rel="nofollow">站长后台</a></nav>
-<p>OneMJJ · VPS、自托管与 AI 工具的实测笔记。少踩坑，多留传家宝。</p>
+<p>OneMJJ · VPS、自托管与 AI 工具与历史维护笔记。少踩坑，多留传家宝。</p>
 <p>部分工具由第三方运营；本站命令仅供复制，不会自动执行。运行前请核对环境、阅读源码并备份重要数据。本站可能展示 Google AdSense 广告，详见<a href="/privacy/">隐私政策</a>。</p>`;
 }
 
@@ -305,12 +307,13 @@ function seoContent(path: string, data: any, allPosts: any[] = []): string {
   const notes: any[] = Array.isArray(data?.notes) ? data.notes : [];
   const clean = path.replace(/\/+$/, '') || '/';
 
+  if (clean === `/blog/${articleSlug}`) return renderLegacyArticle()+noscriptFooter();
   // Full post body, server-rendered so the article text itself is indexable.
   if (clean.startsWith('/blog/')) {
     const slug = decodeURIComponent(clean.slice('/blog/'.length));
     const post = allPosts.find((p: any) => p?.slug === slug);
     if (post) {
-      const { html } = renderMarkdown(String(post.content ?? ''));
+      const { html, headings } = renderMarkdown(String(post.content ?? ''));
       const idx = allPosts.findIndex((p: any) => p?.slug === slug);
       const prev = idx > 0 ? allPosts[idx - 1] : null;
       const next = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
@@ -318,6 +321,8 @@ function seoContent(path: string, data: any, allPosts: any[] = []): string {
 <h1>${esc(post.title)}</h1>
 <p>${esc(post.excerpt ?? '')}</p>
 <p>${esc(post.category ?? '')} · ${esc(post.date ?? '')} · 约 ${esc(post.readMinutes ?? '')} 分钟阅读${Array.isArray(post.tags) && post.tags.length ? ` · 标签：${post.tags.map((t: string) => esc(t)).join('、')}` : ''}</p>
+${renderPostEvidence(post)}
+${renderToc(headings)}
 ${html}
 <nav aria-label="上下篇">${prev ? `<a href="/blog/${esc(prev.slug)}/">上一篇：${esc(prev.title)}</a> ` : ''}${next ? `<a href="/blog/${esc(next.slug)}/">下一篇：${esc(next.title)}</a>` : ''}</nav>
 <p><a href="/blog/">全部文章</a> · <a href="/">返回 OneMJJ 首页</a></p>
@@ -360,7 +365,7 @@ ${noscriptFooter()}`;
     return `<h1>关于本站</h1>
 <p>OneMJJ 是一个人维护的低维护自救中心：把买过的鸡、踩过的坑、验证过的工具和还能跑的脚本收进一个双端都好用的工具台。</p>
 <h2>为什么做这个站</h2>
-<p>玩 VPS 和自托管的人多半有同一个问题：常用工具散落在浏览器书签、聊天记录和几十个收藏夹里，换设备就断档，链接挂了也不知道。OneMJJ 只收自己真正用过、并且还能打开的东西：每一条链接都是排障时点过的，每一条命令都是在自己机器上跑过的。</p>
+<p>玩 VPS 和自托管的人多半有同一个问题：常用工具散落在浏览器书签、聊天记录和几十个收藏夹里，换设备就断档，链接挂了也不知道。OneMJJ 收录排障资料与历史经验；每项链接的只读核验状态见工具页。公开链接可达不代表命令已实测或服务已部署，运行记录不明时明确标为 unknown。</p>
 <h2>现在有什么</h2>
 <p>共 ${tools.length} 个工具栏目、${linkCount} 条外部链接。栏目按实际排障顺序划分：VPS 检测、三网延迟、网络工具、自托管与访问、PT 与媒体、AI 与 API、常用脚本、MJJ 笔记和状态页。另有 OneMJJ 小报沉淀促销观察、踩坑记录和长期维护经验。</p>
 <h2>内容怎么维护</h2>
@@ -415,7 +420,9 @@ ${noscriptFooter()}`;
 <p>${esc(toolMatch.desc)}</p>
 <p>${esc(toolMatch.body)}</p>
 <p>分类：${esc(CATEGORY_LABELS[toolMatch.category] ?? toolMatch.category)}</p>
+${renderVerification(toolMatch)}
 ${renderToolGuide(toolMatch.id)}
+${renderFeedback(toolMatch.name, `https://onemjj.com/tools/${encodeURIComponent(toolMatch.id)}/`)}
 ${links.length ? `<h2>可打开的链接</h2><ul>${links.map((l: any) => `<li><a href="${esc(l.url)}" rel="noopener noreferrer">${esc(l.label)}</a>${l.note ? ` — ${esc(l.note)}` : ''}</li>`).join('')}</ul>` : ''}
 ${cmds.length ? `<h2>命令速查</h2><ul>${cmds.map((c: string) => `<li><code>${esc(c)}</code></li>`).join('')}</ul><p>命令仅供复制，运行前请核对来源并读懂内容。</p>` : ''}
 <p><a href="/">返回 OneMJJ 首页</a></p>
@@ -443,7 +450,7 @@ ${noscriptFooter()}`;
   }
 
   return `<h1>OneMJJ｜一个 MJJ 的低维护自救中心</h1>
-<p>VPS 检测、网络排障、自托管、媒体、AI API、常用脚本和传家宝笔记，放进一个双端都舒服的工具台。本站只收录实际使用并验证过的工具，共 ${tools.length} 个栏目。</p>
+<p>VPS 检测、网络排障、自托管、媒体、AI API、常用脚本和传家宝笔记，放进一个双端都舒服的工具台。本站整理公开工具资料与历史笔记，共 ${tools.length} 个栏目。</p>
 <h2>工具栏目</h2>
 ${Array.from(byCategory.entries()).map(([category, items]) => `<h3>${esc(CATEGORY_LABELS[category] ?? category)}</h3><ul>${items.map((t: any) => {
     const links: any[] = Array.isArray(t?.links) ? t.links : [];
@@ -465,6 +472,7 @@ function injectHead(html: string, path: string, data: any, posts: any[]): string
     '/': 'OneMJJ｜一个 MJJ 的低维护自救中心',
     '/weekly': 'OneMJJ 小报｜工具、脚本与 MJJ 生存手册',
     '/blog': '文章归档｜OneMJJ',
+    [`/blog/${articleSlug}`]: legacyArticleTitle+'｜OneMJJ',
     '/privacy': '隐私政策｜OneMJJ', '/about': '关于本站｜OneMJJ',
     '/contact': '联系我们｜OneMJJ', '/disclaimer': '免责声明｜OneMJJ',
   };

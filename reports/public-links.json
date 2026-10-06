@@ -1,0 +1,652 @@
+{
+  "checkedAt": "2026-10-06T07:00:43.986Z",
+  "scope": "Public HTTPS read only. No credentials, scripts executed, paid APIs or service mutation.",
+  "sourceErrors": [],
+  "results": [
+    {
+      "url": "https://api.openai.com/v1/models",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:13.197Z",
+      "result": "manual-review",
+      "note": "Error: timeout"
+    },
+    {
+      "url": "https://betterstack.com/status-page",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:13.199Z",
+      "status": 200,
+      "finalURL": "https://betterstack.com/status-page",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://blog.oknm.de",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.193Z",
+      "result": "manual-review",
+      "note": "Error: getaddrinfo ENOTFOUND blog.oknm.de"
+    },
+    {
+      "url": "https://blog.oknm.de/admin",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.262Z",
+      "result": "manual-review",
+      "note": "Error: getaddrinfo ENOTFOUND blog.oknm.de"
+    },
+    {
+      "url": "https://blog.onemjj.com",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "src/main.ts",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:13.199Z",
+      "status": 200,
+      "finalURL": "https://blog.onemjj.com/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://blog.onemjj.com/posts/codex-app-provider-switching",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.636Z",
+      "status": 200,
+      "finalURL": "https://blog.onemjj.com/posts/codex-app-provider-switching",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://blog.onemjj.com/posts/hermes-multi-provider-routing",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.637Z",
+      "status": 200,
+      "finalURL": "https://blog.onemjj.com/posts/hermes-multi-provider-routing",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://blog.onemjj.com/posts/monolith-cloudflare-deployment-notes",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.860Z",
+      "status": 200,
+      "finalURL": "https://blog.onemjj.com/posts/monolith-cloudflare-deployment-notes",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://blog.onemjj.com/posts/savextube-maintained-fork",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.925Z",
+      "status": 200,
+      "finalURL": "https://blog.onemjj.com/posts/savextube-maintained-fork",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://blog.onemjj.com/posts/sumplus-standalone",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.943Z",
+      "status": 200,
+      "finalURL": "https://blog.onemjj.com/posts/sumplus-standalone",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://blog.onemjj.com/posts/teledeck-one-session-one-runtime",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.995Z",
+      "status": 200,
+      "finalURL": "https://blog.onemjj.com/posts/teledeck-one-session-one-runtime",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://browserleaks.com/ip",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:13.199Z",
+      "status": 200,
+      "finalURL": "https://browserleaks.com/ip",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://caddyserver.com/docs/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:14.226Z",
+      "status": 200,
+      "finalURL": "https://caddyserver.com/docs/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://crt.sh/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:14.777Z",
+      "status": 502,
+      "finalURL": "https://crt.sh/",
+      "result": "manual-review",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://curl.se/docs/manpage.html",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:14.865Z",
+      "status": 200,
+      "finalURL": "https://curl.se/docs/manpage.html",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://developers.cloudflare.com/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:15.666Z",
+      "status": 200,
+      "finalURL": "https://developers.cloudflare.com/",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://developers.cloudflare.com/cloudflare-one/applications/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:15.688Z",
+      "status": 200,
+      "finalURL": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:16.397Z",
+      "status": 200,
+      "finalURL": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://dnschecker.org/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:16.614Z",
+      "status": 200,
+      "finalURL": "https://dnschecker.org/",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://docs.docker.com/compose/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:16.620Z",
+      "status": 200,
+      "finalURL": "https://docs.docker.com/compose/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://emby.media/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:16.628Z",
+      "status": 200,
+      "finalURL": "https://emby.media/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://gateway.example.com/v1",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:27.999Z",
+      "result": "manual-review",
+      "note": "Error: getaddrinfo ENOTFOUND gateway.example.com"
+    },
+    {
+      "url": "https://gateway.example.com/v1/chat/completions",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:28.001Z",
+      "result": "manual-review",
+      "note": "Error: getaddrinfo ENOTFOUND gateway.example.com"
+    },
+    {
+      "url": "https://gateway.example.com/v1/models",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:28.003Z",
+      "result": "manual-review",
+      "note": "Error: getaddrinfo ENOTFOUND gateway.example.com"
+    },
+    {
+      "url": "https://gateway.example.com/v1/responses",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:28.005Z",
+      "result": "manual-review",
+      "note": "Error: getaddrinfo ENOTFOUND gateway.example.com"
+    },
+    {
+      "url": "https://github.com/features/copilot",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:17.692Z",
+      "status": 200,
+      "finalURL": "https://github.com/features/copilot",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://github.com/gdy666/lucky",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:18.854Z",
+      "status": 200,
+      "finalURL": "https://github.com/gdy666/lucky",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://github.com/liuweiqiang0523/savextube",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:28.006Z",
+      "status": 200,
+      "finalURL": "https://github.com/liuweiqiang0523/savextube",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://github.com/louislam/uptime-kuma",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:19.640Z",
+      "status": 200,
+      "finalURL": "https://github.com/louislam/uptime-kuma",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://github.com/masonr/yet-another-bench-script",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:19.876Z",
+      "status": 200,
+      "finalURL": "https://github.com/masonr/yet-another-bench-script",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://github.com/qianqi32/SafeRelay",
+      "sources": [
+        "src/legacy-article.ts"
+      ],
+      "checkedAt": "2026-10-06T07:00:29.419Z",
+      "status": 200,
+      "finalURL": "https://github.com/qianqi32/SafeRelay",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://github.com/TwiN/gatus",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:17.600Z",
+      "status": 200,
+      "finalURL": "https://github.com/TwiN/gatus",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://hostloc.com/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:20.406Z",
+      "result": "manual-review",
+      "note": "Error [ERR_TLS_CERT_ALTNAME_INVALID]: Hostname/IP does not match certificate's altnames: Host: hostloc.com. is not in the cert's altnames: DNS:*.internet.org, DNS:internet.org"
+    },
+    {
+      "url": "https://ip.sb/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:20.463Z",
+      "status": 200,
+      "finalURL": "https://ip.sb/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://ipcheck.ing/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:21.328Z",
+      "status": 403,
+      "finalURL": "https://ipcheck.ing/",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://lmarena.ai/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:21.384Z",
+      "result": "manual-review",
+      "note": "Error: Client network socket disconnected before secure TLS connection was established"
+    },
+    {
+      "url": "https://lowendtalk.com/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:22.153Z",
+      "status": 200,
+      "finalURL": "https://lowendtalk.com/",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://mxtoolbox.com/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:22.382Z",
+      "status": 200,
+      "finalURL": "https://mxtoolbox.com/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://nginx.org/en/docs/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:23.329Z",
+      "status": 200,
+      "finalURL": "https://nginx.org/en/docs/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://onemjj.com",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:23.843Z",
+      "status": 200,
+      "finalURL": "https://onemjj.com/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://openrouter.ai/models",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:24.072Z",
+      "status": 200,
+      "finalURL": "https://openrouter.ai/models",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://ping.pe/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:24.770Z",
+      "status": 200,
+      "finalURL": "https://ping.pe/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://policies.google.com/technologies/partner-sites",
+      "sources": [
+        "src/main.ts"
+      ],
+      "checkedAt": "2026-10-06T07:00:29.675Z",
+      "status": 200,
+      "finalURL": "https://policies.google.com/technologies/partner-sites",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:25.064Z",
+      "status": 200,
+      "finalURL": "https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://securitytrails.com/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:25.356Z",
+      "status": 403,
+      "finalURL": "https://securitytrails.com/",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://trash-guides.info/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:25.723Z",
+      "status": 200,
+      "finalURL": "https://trash-guides.info/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://tz.onemjj.com",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:25.868Z",
+      "status": 200,
+      "finalURL": "https://tz.onemjj.com/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://www.aboutads.info/choices/",
+      "sources": [
+        "src/main.ts",
+        "functions/[[path]].ts"
+      ],
+      "checkedAt": "2026-10-06T07:00:30.532Z",
+      "status": 429,
+      "finalURL": "https://optout.aboutads.info/",
+      "result": "manual-review",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://www.cloudflare.com/cdn-cgi/trace",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:26.247Z",
+      "status": 200,
+      "finalURL": "https://www.cloudflare.com/cdn-cgi/trace",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://www.cloudflare.com/privacypolicy/",
+      "sources": [
+        "src/main.ts"
+      ],
+      "checkedAt": "2026-10-06T07:00:30.909Z",
+      "status": 200,
+      "finalURL": "https://www.cloudflare.com/privacypolicy/",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://www.dmoe.cc/random.php",
+      "sources": [
+        "public/data/posts.json"
+      ],
+      "checkedAt": "2026-10-06T07:00:28.047Z",
+      "status": 200,
+      "finalURL": "https://www.dmoe.cc/random.php",
+      "result": "reachable",
+      "note": "HTTP read only; not command execution or deployment verification"
+    },
+    {
+      "url": "https://www.google.com/settings/ads",
+      "sources": [
+        "src/main.ts",
+        "functions/[[path]].ts"
+      ],
+      "checkedAt": "2026-10-06T07:00:31.446Z",
+      "result": "manual-review",
+      "note": "Error: timeout"
+    },
+    {
+      "url": "https://www.itdog.cn/ping/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:26.927Z",
+      "status": 200,
+      "finalURL": "https://www.itdog.cn/ping/",
+      "result": "manual-review",
+      "note": "Possible verification challenge; manual review required"
+    },
+    {
+      "url": "https://www.qbittorrent.org/",
+      "sources": [
+        "src/default-data.json",
+        "public/data/default-data.json",
+        "https://onemjj.com/api/data"
+      ],
+      "checkedAt": "2026-10-06T07:00:26.992Z",
+      "result": "manual-review",
+      "note": "Error: timeout"
+    }
+  ]
+}

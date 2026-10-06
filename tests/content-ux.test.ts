@@ -70,7 +70,7 @@ async function page(path = '/') {
 test('client and crawler footer explain ownership, commands, privacy and admin', async () => {
  const client = read('src/main.ts'); const html = await (await page()).text();
  for (const text of [client, html]) {
-  assert.ok(text.includes('OneMJJ · VPS、自托管与 AI 工具的实测笔记。少踩坑，多留传家宝。'));
+  assert.ok(text.includes('OneMJJ · VPS、自托管与 AI 工具与历史维护笔记。少踩坑，多留传家宝。'));
   assert.ok(text.includes('部分工具由第三方运营'));
   assert.ok(text.includes('不会自动执行'));
   assert.ok(text.includes('站长后台'));
