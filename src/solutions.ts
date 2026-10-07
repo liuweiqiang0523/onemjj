@@ -3,7 +3,8 @@ export const solutionsTitle = '自托管方案向导｜OneMJJ';
 export const solutionsDescription = '从远程观影、照片文件备份、远程控制三个目标出发，按设备、访问对象与客户端条件选择路线，核对前置步骤、验收和风险。';
 const docs = {
  tailscale: {label:'Tailscale 官方安装与私有网络',url:'https://tailscale.com/kb/1017/install'},
- jellyfin: {label:'Jellyfin 官方网络说明',url:'https://jellyfin.org/docs/general/post-install/networking/'},
+ emby: {label:'Emby 官方客户端连接与网络排查',url:'https://emby.media/support/articles/Connectivity.html'},
+ plex: {label:'Plex 官方远程访问与播放要求',url:'https://support.plex.tv/articles/200289506-remote-access/'},
  restic: {label:'restic 官方备份与恢复手册',url:'https://restic.readthedocs.io/en/stable/'},
  nextcloud: {label:'Nextcloud 官方管理手册',url:'https://docs.nextcloud.com/server/stable/admin_manual/'},
  rustdesk: {label:'RustDesk 官方自建服务器文档',url:'https://rustdesk.com/docs/en/self-host/'},
@@ -19,12 +20,12 @@ export function recommend(s: Selection): Recommendation {
  const security = '先在局域网跑通，再限制入口与账户权限；不把管理端口直接暴露公网。保持更新、记录恢复方法；这是一条人工编辑路线，不是一键部署，也未替你实测环境。';
  let r: Recommendation;
  if (s.goal === 'movie') r = {
-  title: privateClient ? 'Jellyfin + Tailscale 私有观影' : 'Jellyfin + 受控 HTTPS 浏览器入口',
-  reason: privateClient ? '自己和家人可安装客户端，用私有网络访问媒体服务，避免先开放公网端口。' : `${s.audience==='public'?'公共访客不应加入家庭私有网络。':'访问端不安装客户端，不能靠私有 VPN 直接连接。'}Jellyfin 自带网页播放器，但需要你维护安全的 HTTPS 入口。`,
-  alternative:'已有 Emby 可保留现有媒体库，沿用同样的访问边界；先核对许可、客户端与硬件转码费用，不必为向导换服务。',
-  steps:[deviceStep,'安装受设备支持的 Jellyfin 服务端；只读挂载拥有合法使用权的媒体，创建非管理员观影账号，先本地试播。',networkStep,privateClient?'用私有地址打开网页播放器，按家人分别配置访问权限。':'配置反向代理、有效 TLS 证书、独立账号和访问/速率限制；公共用途先审查版权与分享范围，不公开整个媒体库。'],
+  title: privateClient ? 'Emby + Tailscale 私有观影' : 'Emby + 受控 HTTPS 浏览器入口',
+  reason: privateClient ? '自己和家人可安装客户端，用私有网络访问媒体服务，避免先开放公网端口。' : `${s.audience==='public'?'公共访客不应加入家庭私有网络。':'访问端不安装客户端，不能靠私有 VPN 直接连接。'}Emby 自带网页播放器，但需要你维护安全的 HTTPS 入口。`,
+  alternative:'Plex：适合偏好其客户端生态与媒体库体验的人；已有 Emby / Plex 就保留现有库，不必迁移。Plex 的账号、远程播放资格及 Plex Pass / Remote Watch Pass 要按官方当前要求核对；私有组网不等于绕过付费限制。',
+  steps:[deviceStep,'安装受设备支持的 Emby Server；只读挂载拥有合法使用权的媒体，创建非管理员观影账号，先本地试播。',networkStep,privateClient?'用私有地址打开网页播放器，按家人分别配置访问权限。':'配置反向代理、有效 TLS 证书、独立账号和访问/速率限制；公共用途先审查版权与分享范围，不公开整个媒体库。'],
   checks:['关闭手机 Wi-Fi，用移动网络登录普通账户，确认能播放一段实际影片。','检查直接播放 / 转码负载、字幕与上传带宽；普通用户不能进入管理后台。'],
-  risks:['中继连接或上传带宽不足可能卡顿；NAS 转码能力不可假定。','公共分享涉及版权、带宽与攻击面；不提供匿名开放媒体站路线。',security], docs:[docs.jellyfin,...(privateClient?[docs.tailscale]:[])],tool:'media'
+  risks:['Emby 的部分客户端播放、硬件转码等功能涉及客户端解锁或 Emby Premiere；Plex 也有播放与订阅限制，购买前按实际设备核对。','中继连接或上传带宽不足可能卡顿；NAS 转码能力不可假定。','公共分享涉及版权、带宽与攻击面；不提供匿名开放媒体站路线。',security], docs:[docs.emby,docs.plex,...(privateClient?[docs.tailscale]:[])],tool:'media'
  };
  else if (s.goal === 'backup') r = privateClient ? {
   title:'restic 加密版本备份', reason:'自己 / 家人可以安装工具时，用可恢复的版本快照保护文件；同步删除不是备份。',

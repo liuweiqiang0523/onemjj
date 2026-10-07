@@ -17,7 +17,12 @@ test('decision routes respect audience, client, OS limits and offer actionable g
  assert.match(mod.recommend({...base, device:'linux', edition:undefined, kind:'nas'}).title, /后台管理/);
  assert.match(mod.recommend({...base, client:'no'}).title, /Guacamole/);
  assert.match(mod.recommend({...base, audience:'public'}).title, /不开放/);
- assert.match(mod.recommend({goal:'movie',device:'mac',audience:'family',client:'yes'}).title, /Tailscale/);
+ const movie=mod.recommend({goal:'movie',device:'mac',audience:'family',client:'yes'});
+ assert.match(movie.title, /Emby.*Tailscale/);
+ assert.match(movie.alternative, /Plex/);
+ assert.ok(movie.docs.some(d=>d.url.startsWith('https://emby.media/')));
+ assert.ok(movie.docs.some(d=>d.url.startsWith('https://support.plex.tv/')));
+ assert.doesNotMatch(movie.steps.join(' '), /Jellyfin/);
  assert.match(mod.recommend({goal:'movie',device:'mac',audience:'family',client:'no'}).title, /HTTPS/);
  assert.match(mod.recommend({goal:'backup',device:'mac',audience:'family',client:'yes'}).title, /restic/);
  assert.match(mod.recommend({goal:'backup',device:'linux',audience:'public',client:'yes'}).title, /Nextcloud/);

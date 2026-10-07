@@ -28,7 +28,7 @@ for(const width of [1440,390,320]) test(`solution cards, history and real share 
  if(width!==320){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`${shots}/copy-failure-${width}.png`,fullPage:true});}
 });
 test('NAS, browser backup and invalid URL branches',async({page})=>{
- for(const [query,title] of [['goal=remote&device=linux&kind=nas&audience=family&client=no','NAS 转为后台管理'],['goal=backup&device=mac&audience=family&client=no','Nextcloud 浏览器收集'],['goal=movie&device=linux&audience=family&client=yes','Jellyfin + Tailscale']]){
+ for(const [query,title] of [['goal=remote&device=linux&kind=nas&audience=family&client=no','NAS 转为后台管理'],['goal=backup&device=mac&audience=family&client=no','Nextcloud 浏览器收集'],['goal=movie&device=linux&audience=family&client=yes','Emby + Tailscale']]){
   await page.goto('/solutions/?'+query);await expect(page.locator('.solution-result h2').first()).toContainText(title);
  }
  await page.goto('/solutions/?goal=%3Cscript%3E');await expect(page.getByRole('status')).toContainText('无效');await expect(page.locator('h1')).toHaveText('你想做什么？');
