@@ -64,7 +64,17 @@ for(const width of [1440,320]) test(`Lucky opt-in video plays with Chinese capti
  await details.locator('summary').click();await expect(video).toBeVisible();
  expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- await video.evaluate(async(v:HTMLVideoElement)=>{await v.play();v.textTracks[0].mode='showing';});
+ const range=await page.request.get('/media/lucky-route.mp4',{headers:{Range:'bytes=0-31'}});
+ expect(range.status()).toBe(206);expect(range.headers()['content-type']).toContain('video/mp4');
+ expect(range.headers()['content-range']).toMatch(/^bytes 0-31\/\d+$/);expect((await range.body()).length).toBe(32);
+ await video.evaluate(async(v:HTMLVideoElement)=>{
+  const state=()=>JSON.stringify({src:v.currentSrc,readyState:v.readyState,networkState:v.networkState,paused:v.paused,currentTime:v.currentTime,error:v.error&&{code:v.error.code,message:v.error.message},h264:v.canPlayType('video/mp4; codecs="avc1.640028"'),aac:v.canPlayType('audio/mp4; codecs="mp4a.40.2"')});
+  let timer:ReturnType<typeof setTimeout>|undefined;
+  try {await Promise.race([v.play(),new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(new Error(`Video play timed out: ${state()}`)),10000);})]);}
+  catch(error){throw new Error(`Video play failed: ${String(error)}; ${state()}`);}
+  finally{clearTimeout(timer);}
+  v.textTracks[0].mode='showing';
+ });
  await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>v.currentTime)).toBeGreaterThan(1);
  expect(await video.evaluate((v:HTMLVideoElement)=>({duration:v.duration,width:v.videoWidth,height:v.videoHeight,controls:v.controls,inline:v.playsInline,error:v.error}))).toEqual({duration:30,width:1080,height:600,controls:true,inline:true,error:null});
  await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>v.textTracks[0].cues?.length)).toBe(4);
