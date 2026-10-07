@@ -27,6 +27,29 @@ for(const width of [1440,390,320]) test(`solution cards, history and real share 
  await page.getByRole('button',{name:'复制方案链接'}).click();await expect(page.getByRole('status')).toContainText('复制失败');await expect(page.getByLabel('方案链接')).toHaveValue(link);
  if(width!==320){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`${shots}/copy-failure-${width}.png`,fullPage:true});}
 });
+for(const width of [1440,390,320]) test(`Lucky family dual-path and public boundaries at ${width}`,async({page})=>{
+ await page.setViewportSize({width,height:900});
+ const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+ for(const client of ['yes','no']) {
+  await page.goto('/solutions/');
+  for(const value of ['movie','mac','family',client]) await page.locator(`[data-choice="${value}"]`).click();
+  const route=page.locator('.solution-network');
+  await expect(route).toHaveCount(1);
+  await expect(route.getByRole('heading',{name:'家里内网直连 + 外网 Lucky HTTPS 反代',exact:true})).toBeVisible();
+  await expect(route.locator('.solution-paths p')).toHaveCount(2);
+  await expect(page.locator('.solution-result h2')).toContainText(client==='yes'?'Tailscale':'Lucky HTTPS');
+  await expect(route).toContainText('CGNAT');
+  await expect(route.getByRole('link',{name:'Lucky 官方 Web 服务：反代、TLS 与日志 ↗'})).toHaveAttribute('href','https://lucky666.cn/docs/modules/web/');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.reload();await expect(route).toHaveCount(1);
+  if(client==='no'){mkdirSync(shots,{recursive:true});await route.scrollIntoViewIfNeeded();await page.screenshot({path:`${shots}/lucky-${width}.png`,fullPage:true});}
+  await page.goto(`/solutions/?goal=movie&device=mac&audience=public&client=${client}`);
+  await expect(page.locator('.solution-network')).toHaveCount(0);
+  await expect(page.locator('.solution-result')).not.toContainText('Lucky');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ }
+ expect(errors).toEqual([]);
+});
 test('NAS, browser backup and invalid URL branches',async({page})=>{
  for(const [query,title] of [['goal=remote&device=linux&kind=nas&audience=family&client=no','NAS 转为后台管理'],['goal=backup&device=mac&audience=family&client=no','Nextcloud 浏览器收集'],['goal=movie&device=linux&audience=family&client=yes','Emby + Tailscale']]){
   await page.goto('/solutions/?'+query);await expect(page.locator('.solution-result h2').first()).toContainText(title);
