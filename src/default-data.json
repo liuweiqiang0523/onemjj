@@ -7,7 +7,7 @@
       "icon": "🖥️",
       "category": "VPS",
       "badge": "常用",
-      "body": "买鸡后第一件事：看基础性能、路由、解锁和端口，不要先上头续费。",
+      "body": "买鸡后第一件事：看基础性能、路由、解锁和端口，不要先上头续费。 前提：Linux/WSL2、Bash、curl、sha256sum、less。下载使用隔离临时目录，master 是会漂移的快照，记录日期和 SHA256；仅检查不执行。YABS 是性能压力测试，会写磁盘、下载二进制、访问第三方和上传跑分，运行前核对流量费用、资源上限及服务商条款，勿直接在生产机跑。",
       "links": [
         {
           "label": "Ping.pe",
@@ -31,7 +31,7 @@
         }
       ],
       "commands": [
-        "curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh"
+        "# Linux/WSL2 + Bash: download/review only, never execute here.\nREVIEW_DIR=$(mktemp -d \"${TMPDIR:-/tmp}/yabs-review.XXXXXX\") &&\ncurl --proto '=https' --tlsv1.2 --max-time 60 -fsSLo \"$REVIEW_DIR/yabs.sh\" https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh &&\nprintf 'Mutable master snapshot; record SHA256 and inspect before any separate test.\\n' &&\nsha256sum \"$REVIEW_DIR/yabs.sh\" && less \"$REVIEW_DIR/yabs.sh\""
       ]
     },
     {
@@ -41,7 +41,7 @@
       "icon": "📶",
       "category": "Network",
       "badge": "常用",
-      "body": "用国内外多节点工具检查延迟、路由和连通性，排查是本地网络、运营商还是目标服务的问题。",
+      "body": "用国内外多节点工具检查延迟、路由和连通性，排查是本地网络、运营商还是目标服务的问题。 前提：Linux/macOS POSIX shell 与 curl/ping；Windows 请用 WSL2，PowerShell 的别名与语法不同。请求只验证当时网络，不是持续可用性保证。",
       "links": [
         {
           "label": "Cloudflare Trace",
@@ -70,7 +70,7 @@
       "desc": "DNS / Whois / TLS / 端口",
       "icon": "🌐",
       "category": "Network",
-      "body": "排查域名、证书、解析和端口时常用的网页工具。",
+      "body": "排查域名、证书、解析和端口时常用的网页工具。 前提：Linux/macOS POSIX shell，已安装 dig 与 curl；Windows 使用 WSL2 或对应原生工具。",
       "links": [
         {
           "label": "DNS Checker",
@@ -134,7 +134,7 @@
       "desc": "刷流 / 整理 / 115 / Emby",
       "icon": "🎞️",
       "category": "Media",
-      "body": "媒体自动化、下载整理和播放服务的常用文档入口。公开页面只放通用资料，不暴露私人服务地址。",
+      "body": "媒体自动化、下载整理和播放服务的常用文档入口。公开页面只放通用资料，不暴露私人服务地址。 前提：Linux/macOS/WSL2 POSIX shell、Docker Compose v2，先进入正确项目目录。SERVICE=emby 是实际服务名示例，按 compose 文件替换；仅查看状态与日志，不升级。",
       "links": [
         {
           "label": "TRaSH Guides",
@@ -154,7 +154,7 @@
       ],
       "commands": [
         "docker compose ps",
-        "docker compose logs --tail=80 <service>"
+        "SERVICE=emby\ndocker compose logs --tail=80 \"$SERVICE\""
       ]
     },
     {
@@ -163,7 +163,7 @@
       "desc": "模型目录 / API 检测 / 代码助手",
       "icon": "🤖",
       "category": "AI",
-      "body": "公开模型目录、效果参考和代码助手入口。模型列表可见不代表请求可用。OpenAI 模型列表需要鉴权；下方 Python 3 示例以隐藏输入读取密钥，不把密钥写进命令历史或进程参数，不打印密钥，也不启用调试日志。仅向官方 HTTPS 地址发送，运行前确认环境、账户权限和费用。",
+      "body": "公开模型目录、效果参考和代码助手入口。模型列表可见不代表请求可用。OpenAI 模型列表需要鉴权；下方 Python 3 示例以隐藏输入读取密钥，不把密钥写进命令历史或进程参数，不打印密钥，也不启用调试日志。仅向官方 HTTPS 地址发送，运行前确认环境、账户权限和费用。 前提：Linux/macOS/WSL2 POSIX shell、Python 3、可交互 TTY；拒绝无 TTY 与所有重定向，GetPassWarning 视为错误。密钥隐藏输入，不进入历史/argv；只打印状态码及模型 ID，错误响应体隐藏。不启用调试日志，确认 HTTPS、账户权限及费用。",
       "links": [
         {
           "label": "OpenRouter Models",
@@ -182,7 +182,7 @@
         }
       ],
       "commands": [
-        "python3 -c 'import getpass,json,urllib.request; key=getpass.getpass(\"OpenAI API key (hidden): \" ); req=urllib.request.Request(\"https://api.openai.com/v1/models\",headers={\"Authorization\":\"Bearer \"+key}); data=json.load(urllib.request.urlopen(req,timeout=30)); print(\"\\n\".join(m[\"id\"] for m in data[\"data\"]))'",
+        "python3 -c 'import getpass,json,sys,warnings,urllib.request,urllib.error\nif not sys.stdin.isatty() or not sys.stderr.isatty():\n    raise SystemExit(\"Interactive TTY required; refusing echoed input\")\nwarnings.simplefilter(\"error\",getpass.GetPassWarning)\nclass NoRedirect(urllib.request.HTTPRedirectHandler):\n    def redirect_request(self,req,fp,code,msg,headers,newurl):\n        raise urllib.error.HTTPError(req.full_url,code,\"Redirect refused\",headers,None)\nkey=getpass.getpass(\"OpenAI API key (hidden): \")\nif not key or any(c in key for c in \"\\r\\n\"):\n    raise SystemExit(\"Invalid key\")\nreq=urllib.request.Request(\"https://api.openai.com/v1/models\",headers={\"Authorization\":\"Bearer \"+key})\ntry:\n    with urllib.request.build_opener(NoRedirect()).open(req,timeout=30) as response:\n        print(\"HTTP\",response.status)\n        data=json.load(response)\n    print(\"\\n\".join(m[\"id\"] for m in data[\"data\"]))\nexcept urllib.error.HTTPError as error:\n    raise SystemExit(\"HTTP \"+str(error.code)+\"; response body hidden\")\nexcept (urllib.error.URLError,ValueError,KeyError):\n    raise SystemExit(\"Request failed; details hidden\")\n'",
         "codex --version"
       ]
     },
@@ -192,7 +192,7 @@
       "desc": "Docker / Nginx / SSH 自救",
       "icon": "📜",
       "category": "Scripts",
-      "body": "把经常搜的命令集中起来，点击下方脚本卡片可复制。",
+      "body": "把经常搜的命令集中起来，点击下方脚本卡片可复制。 前提：Docker Compose v2、正确项目目录、POSIX shell；journalctl 仅 Linux/systemd 且 nginx 是主机服务，不适用于 macOS/原生 Windows/容器 nginx。快捷项仅状态与镜像检查，升级请阅读下方备份、固定 digest 与回滚指南。",
       "links": [
         {
           "label": "Docker Compose Docs",
@@ -211,7 +211,7 @@
         }
       ],
       "commands": [
-        "docker compose pull && docker compose up -d",
+        "docker compose ps && docker compose images",
         "journalctl -u nginx -n 100 --no-pager"
       ]
     },
@@ -270,7 +270,7 @@
   "scripts": [
     {
       "title": "下载并检查 YABS",
-      "cmd": "curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh",
+      "cmd": "# Linux/WSL2 + Bash: download/review only, never execute here.\nREVIEW_DIR=$(mktemp -d \"${TMPDIR:-/tmp}/yabs-review.XXXXXX\") &&\ncurl --proto '=https' --tlsv1.2 --max-time 60 -fsSLo \"$REVIEW_DIR/yabs.sh\" https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh &&\nprintf 'Mutable master snapshot; record SHA256 and inspect before any separate test.\\n' &&\nsha256sum \"$REVIEW_DIR/yabs.sh\" && less \"$REVIEW_DIR/yabs.sh\"",
       "source": {
         "label": "YABS 源码",
         "url": "https://github.com/masonr/yet-another-bench-script"
@@ -373,7 +373,7 @@
           "icon": "🖥️",
           "category": "VPS",
           "badge": "常用",
-          "body": "买鸡后第一件事：看基础性能、路由、解锁和端口，不要先上头续费。",
+          "body": "买鸡后第一件事：看基础性能、路由、解锁和端口，不要先上头续费。 前提：Linux/WSL2、Bash、curl、sha256sum、less。下载使用隔离临时目录，master 是会漂移的快照，记录日期和 SHA256；仅检查不执行。YABS 是性能压力测试，会写磁盘、下载二进制、访问第三方和上传跑分，运行前核对流量费用、资源上限及服务商条款，勿直接在生产机跑。",
           "links": [
             {
               "label": "Ping.pe",
@@ -397,7 +397,7 @@
             }
           ],
           "commands": [
-            "curl -fsSLo yabs.sh https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh && less yabs.sh"
+            "# Linux/WSL2 + Bash: download/review only, never execute here.\nREVIEW_DIR=$(mktemp -d \"${TMPDIR:-/tmp}/yabs-review.XXXXXX\") &&\ncurl --proto '=https' --tlsv1.2 --max-time 60 -fsSLo \"$REVIEW_DIR/yabs.sh\" https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/yabs.sh &&\nprintf 'Mutable master snapshot; record SHA256 and inspect before any separate test.\\n' &&\nsha256sum \"$REVIEW_DIR/yabs.sh\" && less \"$REVIEW_DIR/yabs.sh\""
           ]
         },
         {
@@ -407,7 +407,7 @@
           "icon": "📶",
           "category": "Network",
           "badge": "常用",
-          "body": "用国内外多节点工具检查延迟、路由和连通性，排查是本地网络、运营商还是目标服务的问题。",
+          "body": "用国内外多节点工具检查延迟、路由和连通性，排查是本地网络、运营商还是目标服务的问题。 前提：Linux/macOS POSIX shell 与 curl/ping；Windows 请用 WSL2，PowerShell 的别名与语法不同。请求只验证当时网络，不是持续可用性保证。",
           "links": [
             {
               "label": "Cloudflare Trace",
@@ -436,7 +436,7 @@
           "desc": "DNS / Whois / TLS / 端口",
           "icon": "🌐",
           "category": "Network",
-          "body": "排查域名、证书、解析和端口时常用的网页工具。",
+          "body": "排查域名、证书、解析和端口时常用的网页工具。 前提：Linux/macOS POSIX shell，已安装 dig 与 curl；Windows 使用 WSL2 或对应原生工具。",
           "links": [
             {
               "label": "DNS Checker",
@@ -500,7 +500,7 @@
           "desc": "刷流 / 整理 / 115 / Emby",
           "icon": "🎞️",
           "category": "Media",
-          "body": "媒体自动化、下载整理和播放服务的常用文档入口。公开页面只放通用资料，不暴露私人服务地址。",
+          "body": "媒体自动化、下载整理和播放服务的常用文档入口。公开页面只放通用资料，不暴露私人服务地址。 前提：Linux/macOS/WSL2 POSIX shell、Docker Compose v2，先进入正确项目目录。SERVICE=emby 是实际服务名示例，按 compose 文件替换；仅查看状态与日志，不升级。",
           "links": [
             {
               "label": "TRaSH Guides",
@@ -520,7 +520,7 @@
           ],
           "commands": [
             "docker compose ps",
-            "docker compose logs --tail=80 <service>"
+            "SERVICE=emby\ndocker compose logs --tail=80 \"$SERVICE\""
           ]
         },
         {
@@ -529,7 +529,7 @@
           "desc": "模型目录 / API 检测 / 代码助手",
           "icon": "🤖",
           "category": "AI",
-          "body": "公开模型目录、效果参考和代码助手入口。模型列表可见不代表请求可用。OpenAI 模型列表需要鉴权；下方 Python 3 示例以隐藏输入读取密钥，不把密钥写进命令历史或进程参数，不打印密钥，也不启用调试日志。仅向官方 HTTPS 地址发送，运行前确认环境、账户权限和费用。",
+          "body": "公开模型目录、效果参考和代码助手入口。模型列表可见不代表请求可用。OpenAI 模型列表需要鉴权；下方 Python 3 示例以隐藏输入读取密钥，不把密钥写进命令历史或进程参数，不打印密钥，也不启用调试日志。仅向官方 HTTPS 地址发送，运行前确认环境、账户权限和费用。 前提：Linux/macOS/WSL2 POSIX shell、Python 3、可交互 TTY；拒绝无 TTY 与所有重定向，GetPassWarning 视为错误。密钥隐藏输入，不进入历史/argv；只打印状态码及模型 ID，错误响应体隐藏。不启用调试日志，确认 HTTPS、账户权限及费用。",
           "links": [
             {
               "label": "OpenRouter Models",
@@ -548,7 +548,7 @@
             }
           ],
           "commands": [
-            "python3 -c 'import getpass,json,urllib.request; key=getpass.getpass(\"OpenAI API key (hidden): \" ); req=urllib.request.Request(\"https://api.openai.com/v1/models\",headers={\"Authorization\":\"Bearer \"+key}); data=json.load(urllib.request.urlopen(req,timeout=30)); print(\"\\n\".join(m[\"id\"] for m in data[\"data\"]))'",
+            "python3 -c 'import getpass,json,sys,warnings,urllib.request,urllib.error\nif not sys.stdin.isatty() or not sys.stderr.isatty():\n    raise SystemExit(\"Interactive TTY required; refusing echoed input\")\nwarnings.simplefilter(\"error\",getpass.GetPassWarning)\nclass NoRedirect(urllib.request.HTTPRedirectHandler):\n    def redirect_request(self,req,fp,code,msg,headers,newurl):\n        raise urllib.error.HTTPError(req.full_url,code,\"Redirect refused\",headers,None)\nkey=getpass.getpass(\"OpenAI API key (hidden): \")\nif not key or any(c in key for c in \"\\r\\n\"):\n    raise SystemExit(\"Invalid key\")\nreq=urllib.request.Request(\"https://api.openai.com/v1/models\",headers={\"Authorization\":\"Bearer \"+key})\ntry:\n    with urllib.request.build_opener(NoRedirect()).open(req,timeout=30) as response:\n        print(\"HTTP\",response.status)\n        data=json.load(response)\n    print(\"\\n\".join(m[\"id\"] for m in data[\"data\"]))\nexcept urllib.error.HTTPError as error:\n    raise SystemExit(\"HTTP \"+str(error.code)+\"; response body hidden\")\nexcept (urllib.error.URLError,ValueError,KeyError):\n    raise SystemExit(\"Request failed; details hidden\")\n'",
             "codex --version"
           ]
         },
@@ -558,7 +558,7 @@
           "desc": "Docker / Nginx / SSH 自救",
           "icon": "📜",
           "category": "Scripts",
-          "body": "把经常搜的命令集中起来，点击下方脚本卡片可复制。",
+          "body": "把经常搜的命令集中起来，点击下方脚本卡片可复制。 前提：Docker Compose v2、正确项目目录、POSIX shell；journalctl 仅 Linux/systemd 且 nginx 是主机服务，不适用于 macOS/原生 Windows/容器 nginx。快捷项仅状态与镜像检查，升级请阅读下方备份、固定 digest 与回滚指南。",
           "links": [
             {
               "label": "Docker Compose Docs",
@@ -577,7 +577,7 @@
             }
           ],
           "commands": [
-            "docker compose pull && docker compose up -d",
+            "docker compose ps && docker compose images",
             "journalctl -u nginx -n 100 --no-pager"
           ]
         },

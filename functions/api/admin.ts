@@ -1,3 +1,5 @@
+import { validData } from '../../src/data-schema';
+
 const COOKIE_NAME = '__Host-onemjj_admin';
 const SESSION_SECONDS = 8 * 60 * 60;
 const LOGIN_WINDOW_SECONDS = 15 * 60;
@@ -66,47 +68,6 @@ async function verifySession(request: Request, secret: string) {
   } catch {
     return false;
   }
-}
-
-function validString(value: unknown, maxLength: number) {
-  return typeof value === 'string' && value.length > 0 && value.length <= maxLength;
-}
-
-function validUrl(value: unknown) {
-  if (!validString(value, 2048)) return false;
-  try {
-    return ['https:', 'http:'].includes(new URL(value as string).protocol);
-  } catch {
-    return false;
-  }
-}
-
-function validData(data: any) {
-  if (!data || !Array.isArray(data.tools) || !Array.isArray(data.scripts) || !Array.isArray(data.notes)) return false;
-  if (data.tools.length > 100 || data.scripts.length > 100 || data.notes.length > 100) return false;
-  const toolsValid = data.tools.every((tool: any) => tool
-    && validString(tool.id, 80)
-    && validString(tool.name, 120)
-    && validString(tool.category, 80)
-    && validString(tool.desc, 300)
-    && validString(tool.body, 3000)
-    && Array.isArray(tool.links)
-    && tool.links.length <= 40
-    && tool.links.every((link: any) => validString(link?.label, 160) && validUrl(link?.url))
-    && (!tool.commands || (Array.isArray(tool.commands) && tool.commands.length <= 30 && tool.commands.every((command: unknown) => validString(command, 2000)))));
-  const scriptsValid = data.scripts.every((script: any) => script
-    && validString(script.title, 160)
-    && validString(script.cmd, 2000)
-    && (!script.source || (validString(script.source.label, 160) && validUrl(script.source.url))));
-  const notesValid = data.notes.every((note: any) => note
-    && validString(note.tag, 80)
-    && validString(note.title, 200)
-    && validString(note.body, 5000));
-  const probeValid = !data.probe || (validString(data.probe?.label, 160) && validUrl(data.probe?.url));
-  const heroLinksValid = !data.heroLinks || (Array.isArray(data.heroLinks)
-    && data.heroLinks.length <= 20
-    && data.heroLinks.every((link: any) => validString(link?.label, 160) && validUrl(link?.url)));
-  return toolsValid && scriptsValid && notesValid && probeValid && heroLinksValid;
 }
 
 function validOrigin(request: Request) {

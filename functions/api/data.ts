@@ -1,11 +1,5 @@
-import { refreshPublicContent } from '../../src/content-refresh';
-
+import { loadPublicData } from '../../src/public-data';
 export async function onRequestGet({ env, request }: { env: any; request: Request }) {
-  const stored = await env.ONEMJJ_CONFIG?.get('siteData');
-  if (stored) {
-    return new Response(JSON.stringify(refreshPublicContent(JSON.parse(stored))), { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' } });
-  }
-  const fallbackUrl = new URL('/data/default-data.json', request.url);
-  const fallback = await env.ASSETS.fetch(fallbackUrl);
-  return new Response(await fallback.text(), { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' } });
+ const data = await loadPublicData(env, new URL(request.url));
+ return new Response(JSON.stringify(data), {headers: {'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
 }

@@ -20,7 +20,7 @@ import { renderWeeklyPaper, weeklyForPath, weeklyTitle } from '../src/weekly';
 import { renderSolutions, solutionsTitle, solutionsDescription } from '../src/solutions';
 import { renderMarkdown } from '../src/markdown';
 import { renderToolGuide } from '../src/tool-guides';
-import { refreshPublicContent } from '../src/content-refresh';
+import { loadPublicData } from '../src/public-data';
 import { renderVerification, renderFeedback, renderPostEvidence, renderToc } from '../src/content-evidence';
 
 import { renderLegacyArticle, legacyArticleTitle } from '../src/legacy-article';
@@ -170,34 +170,8 @@ async function latestPost(): Promise<any | null> {
   }
 }
 
-let dataCache: { at: number; data: any } = { at: 0, data: null };
-const DATA_TTL_MS = 30_000;
-
-/** Full site data (KV first, bundled defaults as fallback) for SEO rendering. */
-async function siteData(env: any, url: URL): Promise<any> {
-  const now = Date.now();
-  if (dataCache.data && now - dataCache.at < DATA_TTL_MS) return dataCache.data;
-  let data: any = null;
-  try {
-    const stored = await env.ONEMJJ_CONFIG?.get('siteData');
-    if (stored) data = JSON.parse(stored);
-  } catch {
-    data = null;
-  }
-  if (!data || !Array.isArray(data.tools) || !data.tools.length) {
-    try {
-      const fallback = await env.ASSETS.fetch(new URL('/data/default-data.json', url));
-      if (fallback.ok) data = await fallback.json();
-    } catch {
-      data = null;
-    }
-  }
-  if (data) {
-    data = refreshPublicContent(data);
-    dataCache = { at: now, data };
-  }
-  return data ?? { tools: [], scripts: [], notes: [] };
-}
+/** Shared schema, fallback and read-time migration with API and client. */
+async function siteData(env: any, url: URL): Promise<any> { return loadPublicData(env, url); }
 
 let postsCacheStore: { at: number; data: any[] } = { at: 0, data: [] };
 const POSTS_CACHE_TTL_MS = 60_000;

@@ -2,7 +2,8 @@ import { fallbackData, type Link, type Post, type SiteData, type Tool } from './
 import { renderMarkdown, markdownToText } from './markdown';
 import { renderToolGuide } from './tool-guides';
 import './style.css';
-import { promoteWeekly, renderWeeklyPaper, weeklyForPath, weeklyTitle } from './weekly';
+import { safePublicData } from './public-data';
+import { renderWeeklyPaper, weeklyForPath, weeklyTitle } from './weekly';
 import { renderSolutions, bindSolutions, solutionsTitle, solutionsDescription } from './solutions';
 import { renderLegacyArticle } from './legacy-article';
 import { matchesSearch, renderVerification, renderFeedback, renderPostEvidence, renderToc } from './content-evidence';
@@ -64,11 +65,11 @@ function filteredTools() {
 async function loadData() {
   try {
     const response = await fetch('/api/data', { cache: 'no-store' });
-    if (response.ok) siteData = await response.json();
+    if (response.ok) siteData = safePublicData(await response.json());
   } catch {
     // Keep the bundled data available when the edge configuration is unreachable.
   }
-  siteData = promoteWeekly(siteData);
+  siteData = safePublicData(siteData);
   selected = siteData.tools[0] ?? fallbackData.tools[0];
   try {
     const res = await fetch('/data/posts.json');

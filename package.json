@@ -2,10 +2,11 @@
   "name": "onemjj-site",
   "version": "0.2.3",
   "private": true,
+  "pnpm": {"overrides": {"postcss": "8.5.23", "nanoid@3": "3.3.18", "source-map-js": "1.2.2"}},
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "node scripts/sync-default-data.mjs && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",

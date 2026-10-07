@@ -19,7 +19,7 @@ export function renderFeedback(title:string,url:string):string {
 export function renderPostEvidence(post:{slug:string;date?:string;content?:string;origin?:string}):string {
  const maintenance=post.slug==='teledeck-one-session-one-runtime';
  const version=maintenance?'0.7.15（仅 2026-10-05 补记）；7 月历史版本以正文为准':'unknown（正文未明确可追溯版本号；请核对当前上游文档）';
- return `<aside class="post-evidence" aria-label="文章时效信息"><p><b>首次发布：</b>${esc(post.date??'unknown')}（保留归档原日期；原始发布平台时间未独立复核）。</p><p><b>实质更新：</b>${maintenance?'2026-10-05 维护补记；来源为正文同名章节，站内补记归档于 2026-10-06':'unknown（无明确实质更新记录；不以同步或站点部署日期冒充）'}。</p><p><b>适用版本：</b>${esc(version)}。</p><p>来源：本站公开文章归档与正文；历史运行记录不代表当前重新实测。</p></aside>`;
+ return `<aside class="post-evidence" aria-label="文章时效信息"><p><b>首次发布：</b>${esc(post.date??'unknown')}（保留归档原日期；原始发布平台时间未独立复核）。</p><p><b>实质更新：</b>${maintenance?'2026-10-05 维护补记；来源为正文同名章节，站内补记归档于 2026-10-06':'unknown（无明确实质更新记录；不以同步或站点部署日期冒充）'}。</p><p><b>安全审校：</b>2026-10-07，仅静态及离线检查，未执行付费模型或生产部署。</p><p><b>适用版本：</b>${esc(version)}。</p><p>来源：本站公开文章归档与正文；历史运行记录不代表当前重新实测。</p></aside>`;
 }
 export function renderToc(headings:Heading[]):string {
  const toc=headings.filter(h=>h.level===2);return toc.length>2?`<nav class="post-toc" aria-label="本页目录"><b>本页内容</b><ol>${toc.map(h=>`<li><a href="#${esc(h.id)}">${esc(h.text)}</a></li>`).join('')}</ol></nav>`:'';
