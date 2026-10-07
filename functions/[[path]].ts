@@ -16,6 +16,7 @@
  * project-level fallback; real static files pass through via next().
  */
 
+import { renderSolutions, solutionsTitle, solutionsDescription } from '../src/solutions';
 import { renderMarkdown } from '../src/markdown';
 import { renderToolGuide } from '../src/tool-guides';
 import { refreshPublicContent } from '../src/content-refresh';
@@ -26,6 +27,8 @@ const articleSlug = 'saferelay-telegram-private-chat-bot';
 
 const SPA_ROUTES = new Set([
   '/',
+  '/solutions',
+  '/solutions/',
   '/weekly',
   '/weekly/',
   '/blog',
@@ -301,12 +304,13 @@ function noscriptFooter(): string {
  * catalogue with descriptions and outbound links, and the legal pages in full.
  * The SPA replaces #app on boot, so this never double-renders for real users.
  */
-function seoContent(path: string, data: any, allPosts: any[] = []): string {
+function seoContent(path: string, data: any, allPosts: any[] = [], params = new URLSearchParams()): string {
   const tools: any[] = Array.isArray(data?.tools) ? data.tools : [];
   const scripts: any[] = Array.isArray(data?.scripts) ? data.scripts : [];
   const notes: any[] = Array.isArray(data?.notes) ? data.notes : [];
   const clean = path.replace(/\/+$/, '') || '/';
 
+  if (clean === '/solutions') return renderSolutions(params) + noscriptFooter();
   if (clean === `/blog/${articleSlug}`) return renderLegacyArticle()+noscriptFooter();
   // Full post body, server-rendered so the article text itself is indexable.
   if (clean.startsWith('/blog/')) {
@@ -451,6 +455,7 @@ ${noscriptFooter()}`;
 
   return `<h1>OneMJJ｜一个 MJJ 的低维护自救中心</h1>
 <p>VPS 检测、网络排障、自托管、媒体、AI API、常用脚本和传家宝笔记，放进一个双端都舒服的工具台。本站整理公开工具资料与历史笔记，共 ${tools.length} 个栏目。</p>
+<p><a href="/solutions/">自托管方案向导</a>：观影、照片文件备份与远程控制，从目标开始选择。</p>
 <h2>工具栏目</h2>
 ${Array.from(byCategory.entries()).map(([category, items]) => `<h3>${esc(CATEGORY_LABELS[category] ?? category)}</h3><ul>${items.map((t: any) => {
     const links: any[] = Array.isArray(t?.links) ? t.links : [];
@@ -470,6 +475,7 @@ function injectHead(html: string, path: string, data: any, posts: any[]): string
   const post = clean.startsWith('/blog/') ? posts.find((p: any) => p.slug === decodeURIComponent(clean.slice(6))) : null;
   const titles: Record<string, string> = {
     '/': 'OneMJJ｜一个 MJJ 的低维护自救中心',
+    '/solutions': solutionsTitle,
     '/weekly': 'OneMJJ 小报｜工具、脚本与 MJJ 生存手册',
     '/blog': '文章归档｜OneMJJ',
     [`/blog/${articleSlug}`]: legacyArticleTitle+'｜OneMJJ',
@@ -485,6 +491,7 @@ function injectHead(html: string, path: string, data: any, posts: any[]): string
   html = html.replace(/(<link rel="canonical" href=")[^"]*("\s*\/?>)/, (_match, before, after) => before + esc(canonical) + after)
     .replace(/(<meta property="og:url" content=")[^"]*("\s*\/?>)/, (_match, before, after) => before + esc(canonical) + after);
   const descriptions: Record<string, string> = {
+    '/solutions': solutionsDescription,
     '/weekly': 'OneMJJ 小报：VPS、网络、自托管、脚本和低维护生存手册。',
     '/blog': 'OneMJJ 文章归档：自托管、Telegram 机器人、Cloudflare 边缘部署与 AI 网关的实战记录与踩坑笔记。',
   };
@@ -494,8 +501,8 @@ function injectHead(html: string, path: string, data: any, posts: any[]): string
 }
 
 /** Inject crawler-visible markup into the SPA shell's #app container. */
-function injectSeo(html: string, path: string, data: any, allPosts: any[] = []): string {
-  const content = seoContent(path, data, allPosts);
+function injectSeo(html: string, path: string, data: any, allPosts: any[] = [], params = new URLSearchParams()): string {
+  const content = seoContent(path, data, allPosts, params);
   return injectHead(html, path, data, allPosts).replace(
     '<div id="app"></div>',
     `<div id="app"><div id="seo-content">${content}</div></div>`,
@@ -546,7 +553,7 @@ export async function onRequest({ request, env, next }: { request: Request; env:
     const shell = await env.ASSETS.fetch(new URL('/index.html', url));
     const html = await shell.text();
     const data = await siteData(env, url);
-    return new Response(injectSeo(html, path, data, allPosts), {
+    return new Response(injectSeo(html, path, data, allPosts, url.searchParams), {
       status: shell.status,
       headers: {
         'content-type': 'text/html; charset=utf-8',

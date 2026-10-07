@@ -2,10 +2,11 @@ import { fallbackData, type Link, type Post, type SiteData, type Tool } from './
 import { renderMarkdown, markdownToText } from './markdown';
 import { renderToolGuide } from './tool-guides';
 import './style.css';
+import { renderSolutions, bindSolutions, solutionsTitle, solutionsDescription } from './solutions';
 import { renderLegacyArticle } from './legacy-article';
 import { matchesSearch, renderVerification, renderFeedback, renderPostEvidence, renderToc } from './content-evidence';
 
-type Mode = 'home' | 'weekly' | 'tool' | 'article' | 'privacy' | 'about' | 'contact' | 'disclaimer' | 'blog' | 'post';
+type Mode = 'solutions' | 'home' | 'weekly' | 'tool' | 'article' | 'privacy' | 'about' | 'contact' | 'disclaimer' | 'blog' | 'post';
 
 const articleSlug = 'saferelay-telegram-private-chat-bot';
 const contactEmail = 'liuweiqiang0523@gmail.com';
@@ -80,6 +81,7 @@ async function loadData() {
 
 function readRoute() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  if (path === '/solutions') { mode = 'solutions'; return; }
   if (path === '/weekly') {
     mode = 'weekly';
     return;
@@ -130,6 +132,7 @@ function readRoute() {
 }
 
 const PAGE_META: Record<string, { title: string; description: string }> = {
+  solutions: {title:solutionsTitle, description:solutionsDescription},
   privacy: {
     title: '隐私政策｜OneMJJ',
     description: 'OneMJJ 隐私政策：说明本站收集哪些信息、Cookie 与第三方广告（Google AdSense）如何使用数据，以及你可以如何选择退出个性化广告。',
@@ -226,7 +229,7 @@ function renderHome() {
       <span class="eyebrow">OneMJJ / Low-maintenance survival center</span>
       <h1>一个 MJJ 的低维护自救中心</h1>
       <p>VPS 检测、网络排障、自托管、媒体、AI API、常用脚本和传家宝笔记，放进一个双端都舒服的工具台。</p>
-      <div class="actions"><a class="primary-link" href="#tools">开始使用</a><a class="ghost-link" href="/weekly/" data-route>看 MJJ 小报</a>${heroLinks().map(link => `<a class="ghost-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.label)}</a>`).join('')}</div>
+      <div class="actions"><a class="primary-link" href="/solutions/" data-route>自托管方案向导</a><a class="ghost-link" href="#tools">开始使用</a><a class="ghost-link" href="/weekly/" data-route>看 MJJ 小报</a>${heroLinks().map(link => `<a class="ghost-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.label)}</a>`).join('')}</div>
     </div>
     <aside class="status-card" aria-label="站点信息">
       <b>本站提供什么</b>
@@ -551,6 +554,7 @@ function navLink(path: string, label: string, isActive: boolean, spa = true) {
 }
 
 const PAGE_RENDERERS: Record<string, () => string> = {
+  solutions: () => renderSolutions(new URLSearchParams(location.search), history.state?.solutionDraft ?? {}, true),
   privacy: renderPrivacy,
   about: renderAbout,
   contact: renderContact,
@@ -594,6 +598,7 @@ function navigate(path: string) {
 
 function bind() {
   bindRouteLinks();
+  if (mode === 'solutions') bindSolutions(render);
   document.querySelectorAll<HTMLButtonElement>('[data-cat]').forEach(button => {
     button.addEventListener('click', () => {
       active = button.dataset.cat ?? '全部';
