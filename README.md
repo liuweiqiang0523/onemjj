@@ -46,6 +46,14 @@ npx wrangler pages secret put ADMIN_SESSION_SECRET --project-name onemjj
 
 建议额外使用 Cloudflare Access 保护 `/admin/*` 和 `/api/admin`。
 
+## Lucky 路线视频
+
+`/solutions/` 的家庭观影 Lucky 卡片使用共享 SSR / SPA 渲染，原文字教程与 Emby / Plex / Tailscale 选择逻辑不变。入口为默认折叠的“看视频理解路线”，原生播放器提供 controls、playsinline、preload=none，无自动播放、第三方播放器或新增追踪。公共访客的已选路线不展示家庭 Lucky 卡片或视频。
+
+素材来自站主已确认的 OneMJJ Lucky 白板解说短片 `onemjj-lucky-narrated.mp4`，公开副本为 `public/media/lucky-route.mp4`（30 秒，1080×600，H.264 + AAC，2,147,556 字节，低于 Cloudflare Pages 单文件 25 MiB 限额），未重编码或替换源文件。`lucky-route-poster.jpg` 从其第 29 秒完整路线画面提取；同名中文 SRT 保留确认的字幕，WebVTT 仅转换时间格式供浏览器可选字幕使用。素材只有泛化路径，不含真实 IP、域名、端口或账户。
+
+视频仅解释“家里内网直连 / 外网 HTTPS → Lucky → Emby”的双路径，不是 CGNAT 穿透，也不证明访客入口可达；实际公网、证书、防火墙与账户验收仍以下方教程为准。媒体全部由本站静态提供，现有 CSP `default-src 'self'` 已允许同源媒体，无需放宽策略；不更改 schema 或写入 KV。
+
 ## 部署
 
 项目通过 Wrangler 直接部署到 Cloudflare Pages 项目 `onemjj`：

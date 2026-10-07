@@ -47,6 +47,22 @@ test('family movie results include a separate Lucky dual-path route without repl
  for(const goal of ['backup','remote'] as const) assert.doesNotMatch(renderResult({goal,device:'mac',audience:'family',client:'yes'}), /Lucky|solution-network/);
 });
 
+test('Lucky video is opt-in, same-origin and limited to family movie results', async () => {
+ const {renderResult}=await import('../src/solutions.ts');
+ for(const client of ['yes','no'] as const) {
+  const html=renderResult({goal:'movie',device:'mac',audience:'family',client});
+  assert.match(html, /<details class="solution-video"><summary>看视频理解路线/);
+  assert.match(html, /<video[^>]*controls[^>]*playsinline[^>]*preload="none"[^>]*poster="\/media\/lucky-route-poster.jpg"/);
+  assert.match(html, /src="\/media\/lucky-route.mp4" type="video\/mp4"/);
+  assert.match(html, /<track kind="subtitles" src="\/media\/lucky-route.zh-CN.vtt" srclang="zh-CN" label="中文字幕"/);
+  assert.match(html, /href="\/media\/lucky-route.zh-CN.srt" download/);
+  assert.doesNotMatch(html, /autoplay|<iframe|<details[^>]*\bopen\b/);
+  assert.match(html, /不是 CGNAT 穿透/);
+ }
+ for(const client of ['yes','no'] as const) assert.doesNotMatch(renderResult({goal:'movie',device:'mac',audience:'public',client}), /<video|lucky-route/);
+ for(const goal of ['backup','remote'] as const) assert.doesNotMatch(renderResult({goal,device:'mac',audience:'family',client:'yes'}), /<video|lucky-route/);
+});
+
 test('solutions SSR has real content and metadata', async () => {
  const {onRequest}=await import('../functions/[[path]].ts');
  const data=readFileSync(new URL('../src/default-data.json',import.meta.url),'utf8');
@@ -64,7 +80,9 @@ test('selected movie SSR matches family and public network boundaries without un
   const res=await onRequest({request:new Request(`https://onemjj.com/solutions/?goal=movie&device=mac&audience=${audience}&client=no`),env:{ASSETS:{fetch:async(url:URL)=>new Response(url.pathname==='/index.html'?'<title>shell</title><div id="app"></div>':url.pathname==='/data/posts.json'?'[]':data)}},next:async()=>new Response('static')});
   const html=await res.text();
   assert.equal((html.match(/class="solution-network"/g)||[]).length,audience==='family'?1:0);
-  if(audience==='public') assert.doesNotMatch(html,/Lucky/);
+  assert.equal((html.match(/<video /g)||[]).length,audience==='family'?1:0);
+  if(audience==='public') assert.doesNotMatch(html,/Lucky|lucky-route/);
+  else assert.match(html, /preload="none"/);
  }
 });
 

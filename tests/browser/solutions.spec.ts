@@ -50,6 +50,35 @@ for(const width of [1440,390,320]) test(`Lucky family dual-path and public bound
  }
  expect(errors).toEqual([]);
 });
+for(const width of [1440,320]) test(`Lucky opt-in video plays with Chinese captions at ${width}`,async({page})=>{
+ await page.setViewportSize({width,height:900});
+ const mediaRequests:string[]=[];
+ page.on('request',req=>{if(req.url().includes('/media/lucky-route.mp4'))mediaRequests.push(req.url());});
+ const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+ await page.goto('/solutions/?goal=movie&device=mac&audience=family&client=no');
+ const details=page.locator('.solution-video');const video=details.locator('video');
+ await expect(details).not.toHaveAttribute('open');
+ await expect(video).toBeHidden();
+ expect(await video.evaluate((v:HTMLVideoElement)=>({paused:v.paused,preload:v.preload,autoplay:v.autoplay}))).toEqual({paused:true,preload:'none',autoplay:false});
+ expect(mediaRequests).toEqual([]);
+ await details.locator('summary').click();await expect(video).toBeVisible();
+ expect(await video.evaluate((v:HTMLVideoElement)=>v.paused)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await video.evaluate(async(v:HTMLVideoElement)=>{await v.play();v.textTracks[0].mode='showing';});
+ await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>v.currentTime)).toBeGreaterThan(1);
+ expect(await video.evaluate((v:HTMLVideoElement)=>({duration:v.duration,width:v.videoWidth,height:v.videoHeight,controls:v.controls,inline:v.playsInline,error:v.error}))).toEqual({duration:30,width:1080,height:600,controls:true,inline:true,error:null});
+ await expect.poll(()=>video.evaluate((v:HTMLVideoElement)=>v.textTracks[0].cues?.length)).toBe(4);
+ await video.evaluate((v:HTMLVideoElement)=>v.pause());
+ const poster=await page.request.get('/media/lucky-route-poster.jpg');expect(poster.ok()).toBe(true);expect(poster.headers()['content-type']).toContain('image/jpeg');
+ const captions=await page.request.get('/media/lucky-route.zh-CN.vtt');expect(captions.headers()['content-type']).toContain('text/vtt');
+ await details.locator('summary').focus();await page.keyboard.press('Enter');await expect(details).not.toHaveAttribute('open');
+ for(const client of ['yes','no']) {
+  await page.goto(`/solutions/?goal=movie&device=mac&audience=public&client=${client}`);
+  await expect(page.locator('video,.solution-video')).toHaveCount(0);
+ }
+ expect(errors).toEqual([]);
+});
+
 test('NAS, browser backup and invalid URL branches',async({page})=>{
  for(const [query,title] of [['goal=remote&device=linux&kind=nas&audience=family&client=no','NAS 转为后台管理'],['goal=backup&device=mac&audience=family&client=no','Nextcloud 浏览器收集'],['goal=movie&device=linux&audience=family&client=yes','Emby + Tailscale']]){
   await page.goto('/solutions/?'+query);await expect(page.locator('.solution-result h2').first()).toContainText(title);
