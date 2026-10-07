@@ -1,7 +1,8 @@
 /** Narrow, idempotent migration of known historical copy in KV; preserve unrelated admin edits. */
+import { promoteWeekly } from './weekly';
 const replacements: Record<string, string> = {"本月真实观察：WorkBuddy 的 hy3（腾讯混元）白嫖额度续到 8 月底，实测可用。": "历史观察（2026 年 8 月）：当时记录 WorkBuddy 的 hy3（腾讯混元）临时额度延续至 2026-08-31；该日期现已过期。本次仅修正文案，未复核当前额度或可用性，不应据此判断现在仍可免费使用。", "密码登录的机器在公网上活不过一个扫描周期。": "公网 SSH 密码认证容易遭遇扫描与暴力尝试；弱密码、缺少限速和及时更新会增加失陷风险。切换前先确认密钥登录可用，保留恢复入口。", "没有异地备份的数据等于没有数据。": "只有本地副本时，设备故障、误删或勒索可能同时损坏原件与备份；建议保留隔离的异地副本，并验证恢复。", "结论：这类公益中转普遍有客户端指纹或地域门槛，不是配置能绕的。": "这是当时几条访问路径的失败记录，不能据此推断所有公益中转的机制，也未复核当前服务状态。", "改一行文案推上去就上线": "页面代码由 CI 部署；内容读取优先使用 KV，修改打包默认数据不会自动覆盖 KV"};
 export function refreshPublicContent<T extends Record<string, any>>(input: T): T {
- const data = structuredClone(input);
+ const data = promoteWeekly(structuredClone(input));
  const ai = data.tools?.find((t: any) => t.id === 'ai-api');
  if (ai) {
   if (ai.desc === 'Sub2API / 模型检测 / Prompt') ai.desc = '模型目录 / API 检测 / 代码助手';
@@ -12,10 +13,6 @@ export function refreshPublicContent<T extends Record<string, any>>(input: T): T
  for (const link of [...(data.heroLinks ?? []), ...(data.probe ? [data.probe] : [])]) {
   if (['乱写のBlog', '瞎记录のBlog'].includes(link.label)) link.label = '个人博客 · ' + link.label + ' ↗';
   if (link.label === '没🐔の探针') link.label = '服务探针 · 没🐔の探针 ↗';
- }
- if (data.weekly?.issue === '002' && data.weekly.date === '2026-08-06') {
-  data.weekly.archiveNotice = '历史刊归档；原发布日期记录为 2026-08-06。本文中的额度、价格和运行情况仅代表当时记录。';
-  data.weekly.updated = '2026-10-06';
  }
  return data;
 }

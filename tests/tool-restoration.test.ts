@@ -30,7 +30,7 @@ test('SSR serves evidence, feedback, TOC and original date for all content', asy
  }
 });
 test('server HTML has route-specific title and canonical without running JavaScript', async () => {
- for (const [path,title] of [['/','OneMJJ｜一个 MJJ 的低维护自救中心'],['/weekly/','OneMJJ 小报｜工具、脚本与 MJJ 生存手册'],['/tools/ai-api/','AI & API｜OneMJJ'],['/blog/','文章归档｜OneMJJ'],['/about/','关于本站｜OneMJJ'], ...posts.map((p: any) => ['/blog/'+p.slug+'/',p.title+'｜OneMJJ'])]) {
+ for (const [path,title] of [['/','OneMJJ｜一个 MJJ 的低维护自救中心'],['/weekly/','第003期 · '+data.weekly.headlineTitle+'｜OneMJJ 小报'],['/tools/ai-api/','AI & API｜OneMJJ'],['/blog/','文章归档｜OneMJJ'],['/about/','关于本站｜OneMJJ'], ...posts.map((p: any) => ['/blog/'+p.slug+'/',p.title+'｜OneMJJ'])]) {
   const html = await page(path);
   assert.ok(html.includes('<title>'+esc(title)+'</title>'),path);
   assert.ok(html.includes('<link rel="canonical" href="https://onemjj.com'+path+'"'),path);

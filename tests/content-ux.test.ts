@@ -36,13 +36,13 @@ test('AI model example authenticates without a literal key or key-bearing argv',
  assert.deepEqual(data, JSON.parse(read('public/data/default-data.json')));
 });
 test('historical weekly dates and risks are explicit in client and crawler', async () => {
- const html = await (await page('/weekly/')).text();
+ const html = await (await page('/weekly/002/')).text();
  assert.ok(html.includes('原发布日期记录为 2026-08-06'));
  assert.ok(html.includes('2026-10-06'));
  assert.ok(html.includes('2026-08-31'));
  assert.ok(!html.includes('活不过一个扫描周期'));
  assert.ok(!html.includes('没有异地备份的数据等于没有数据'));
- assert.ok(read('src/main.ts').includes('本次仅修正文案'));
+ assert.ok(read('src/weekly.ts').includes('本次仅修正文案'));
 });
 test('desktop catalogue is three columns and homepage does not imply real-time health', () => {
  assert.ok(read('src/style.css').includes('.tools-grid{grid-template-columns:repeat(3,minmax(0,1fr))}'));

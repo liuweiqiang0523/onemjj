@@ -2,6 +2,7 @@ import { fallbackData, type Link, type Post, type SiteData, type Tool } from './
 import { renderMarkdown, markdownToText } from './markdown';
 import { renderToolGuide } from './tool-guides';
 import './style.css';
+import { promoteWeekly, renderWeeklyPaper, weeklyForPath, weeklyTitle } from './weekly';
 import { renderSolutions, bindSolutions, solutionsTitle, solutionsDescription } from './solutions';
 import { renderLegacyArticle } from './legacy-article';
 import { matchesSearch, renderVerification, renderFeedback, renderPostEvidence, renderToc } from './content-evidence';
@@ -67,6 +68,7 @@ async function loadData() {
   } catch {
     // Keep the bundled data available when the edge configuration is unreachable.
   }
+  siteData = promoteWeekly(siteData);
   selected = siteData.tools[0] ?? fallbackData.tools[0];
   try {
     const res = await fetch('/data/posts.json');
@@ -82,7 +84,7 @@ async function loadData() {
 function readRoute() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
   if (path === '/solutions') { mode = 'solutions'; return; }
-  if (path === '/weekly') {
+  if (path === '/weekly' || path.startsWith('/weekly/')) {
     mode = 'weekly';
     return;
   }
@@ -162,7 +164,7 @@ function updateHead() {
     : mode === 'article'
     ? '用 SafeRelay 搭一个防骚扰 Telegram 私聊机器人｜OneMJJ'
     : mode === 'weekly'
-    ? 'OneMJJ 小报｜工具、脚本与 MJJ 生存手册'
+    ? (weeklyForPath(siteData, window.location.pathname) ? weeklyTitle(weeklyForPath(siteData, window.location.pathname)!) : '小报未找到｜OneMJJ')
     : mode === 'tool'
       ? `${selected.name}｜OneMJJ`
       : 'OneMJJ｜一个 MJJ 的低维护自救中心';
@@ -179,7 +181,8 @@ function updateHead() {
     : mode === 'tool'
       ? `${selected.name}：${selected.desc}。${selected.body}`
       : 'OneMJJ，一个 MJJ 的低维护自救中心：VPS 检测、网络工具、自托管、媒体、AI API 与常用脚本。';
-  const canonical = new URL(window.location.pathname, window.location.origin).href;
+  const cleanPath = window.location.pathname.replace(/\/+$/, '') || '/';
+  const canonical = mode === 'weekly' ? `https://onemjj.com${cleanPath}/` : new URL(window.location.pathname, window.location.origin).href;
 
   document.title = title;
   document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', description);
@@ -255,26 +258,7 @@ function renderHome() {
   </section>`;
 }
 
-function renderWeekly() {
-  const weekly = siteData.weekly ?? {
-    issue: '001',
-    date: '2026-07-11',
-    headlineTag: '本期头条',
-    headlineTitle: '这不是导航站，是一份买鸡后的自救报纸。',
-    headlineBody: '首页保留工具箱效率，小报负责沉淀 MJJ 笔记、促销观察、踩坑记录和低维护经验。每一期都有固定地址，可以收藏，也可以直接分享。',
-  };
-  const displayDate = weekly.date.replaceAll('-', '.');
-  return `<section class="weekly">
-    <header><div><span class="issue-label">ONE MJJ WEEKLY</span><h1>OneMJJ 小报</h1><p>一个 MJJ 的赛博杂物间：工具、脚本、行情和生存手册。</p></div><code>ISSUE ${escapeHtml(weekly.issue)}<br/><time datetime="${escapeHtml(weekly.date)}">${escapeHtml(displayDate)}</time></code></header>
-    <p class="archive-notice">${escapeHtml(weekly.archiveNotice ?? '历史刊归档；原发布日期尚未核实。')} 本次仅修正文案；最后更新：${escapeHtml(weekly.updated ?? '2026-10-06')}，未重新实测历史优惠或服务状态。</p>
-    <article class="headline"><span>${escapeHtml(weekly.headlineTag)}</span><h2>${escapeHtml(weekly.headlineTitle)}</h2><p>${escapeHtml(weekly.headlineBody)}</p></article>
-    <div class="grid tools-grid paper">${siteData.tools.slice(0, 8).map(toolCard).join('')}</div>
-    <div class="notes">${siteData.notes.map(note => {
-      const paragraphs = note.body.split('\n').map(p => p.trim()).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
-      return `<details class="note-card"><summary><span>${escapeHtml(note.tag)}</span><h3>${escapeHtml(note.title)}</h3></summary><div class="note-body">${paragraphs}</div></details>`;
-    }).join('')}</div>
-  </section>`;
-}
+function renderWeekly() { return renderWeeklyPaper(siteData, window.location.pathname); }
 
 function renderArticle() { return renderLegacyArticle(); }
 function renderPrivacy() {

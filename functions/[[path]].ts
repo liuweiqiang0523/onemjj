@@ -16,6 +16,7 @@
  * project-level fallback; real static files pass through via next().
  */
 
+import { renderWeeklyPaper, weeklyForPath, weeklyTitle } from '../src/weekly';
 import { renderSolutions, solutionsTitle, solutionsDescription } from '../src/solutions';
 import { renderMarkdown } from '../src/markdown';
 import { renderToolGuide } from '../src/tool-guides';
@@ -31,6 +32,8 @@ const SPA_ROUTES = new Set([
   '/solutions/',
   '/weekly',
   '/weekly/',
+  '/weekly/002',
+  '/weekly/002/',
   '/blog',
   '/blog/',
   '/privacy',
@@ -433,17 +436,7 @@ ${cmds.length ? `<h2>命令速查</h2><ul>${cmds.map((c: string) => `<li><code>$
 ${noscriptFooter()}`;
   }
 
-  if (clean === '/weekly') {
-    const w = data?.weekly ?? {};
-    return `<h1>OneMJJ 小报</h1>
-<p>${esc(w.archiveNotice ?? '历史刊归档；原发布日期尚未核实。')} 本次仅修正文案；最后更新：${esc(w.updated ?? '2026-10-06')}，未重新实测历史优惠或服务状态。</p>
-<p>一个 MJJ 的赛博杂物间：工具、脚本、行情和生存手册。</p>
-${w.headlineTitle ? `<h2>${esc(w.headlineTitle)}</h2><p>${esc(w.headlineBody ?? '')}</p>` : ''}
-${tools.length ? `<h2>本期工具</h2><ul>${tools.slice(0, 8).map((t: any) => `<li><a href="/tools/${esc(t.id)}/">${esc(t.name)}</a> — ${esc(t.desc)}</li>`).join('')}</ul>` : ''}
-${notes.length ? `<h2>MJJ 笔记</h2>${notes.map((n: any) => `<h3>${esc(n.title)}</h3><p>${esc(String(n.body ?? '').split('\n').filter(Boolean).join(' '))}</p>`).join('')}` : ''}
-<p><a href="/">返回 OneMJJ 首页</a></p>
-${noscriptFooter()}`;
-  }
+  if (weeklyForPath(data, path)) return renderWeeklyPaper(data, path) + noscriptFooter();
 
   // Home (and any other shell-served route): full catalogue.
   const byCategory = new Map<string, any[]>();
@@ -482,7 +475,8 @@ function injectHead(html: string, path: string, data: any, posts: any[]): string
     '/privacy': '隐私政策｜OneMJJ', '/about': '关于本站｜OneMJJ',
     '/contact': '联系我们｜OneMJJ', '/disclaimer': '免责声明｜OneMJJ',
   };
-  const title = tool ? `${tool.name}｜OneMJJ` : post ? `${post.title}｜OneMJJ` : titles[clean];
+  const weekly = weeklyForPath(data, path);
+  const title = weekly ? weeklyTitle(weekly) : tool ? `${tool.name}｜OneMJJ` : post ? `${post.title}｜OneMJJ` : titles[clean];
   const canonical = `https://onemjj.com${clean === '/' ? '/' : clean + '/'}`;
   if (title) {
     html = html.replace(/<title>[^<]*<\/title>/, () => `<title>${esc(title)}</title>`)
