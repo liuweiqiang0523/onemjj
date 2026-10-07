@@ -63,7 +63,7 @@ const STATIC_FILES = new Set([
   '/404.css',
 ]);
 
-const STATIC_PREFIXES = ['/assets/', '/data/', '/admin'];
+const STATIC_PREFIXES = ['/assets/', '/data/', '/admin', '/media/'];
 
 /**
  * Mirrors the /* rules in public/_headers so function-served pages keep the same
