@@ -16,7 +16,14 @@ export function renderFeedback(title:string,url:string):string {
  const mail=`mailto:liuweiqiang0523@gmail.com?subject=${encodeURIComponent('OneMJJ 内容反馈：'+title)}&body=${encodeURIComponent(text)}`;
  return `<section class="feedback" aria-label="内容反馈"><h2>内容反馈</h2><p>无需注册，使用本站<a href="/contact/" data-route>公开联系邮箱</a>。邮件客户端不会自动发送。</p><a class="ghost-link" href="${esc(mail)}">邮件反馈（预填页面）</a> <button type="button" data-copy="${esc(text)}">复制反馈模板</button><details><summary>查看反馈模板</summary><pre>${esc(text)}</pre></details></section>`;
 }
-export function renderPostEvidence(post:{slug:string;date?:string;content?:string;origin?:string}):string {
+export function renderPostEvidence(post:{slug:string;date?:string;content?:string;origin?:string;sourceUpdatedAt?:string;syncManaged?:boolean}):string {
+ if (post.syncManaged === true) {
+  const sourceDate=String(post.sourceUpdatedAt??'').slice(0,10) || 'unknown';
+  const origin=post.origin && /^https:\/\/blog\.onemjj\.com\/posts\/[a-z0-9-]+$/i.test(post.origin)
+   ? `<a href="${esc(post.origin)}" target="_blank" rel="noopener noreferrer">博客来源页 ↗</a>`
+   : 'OneMJJ 博客公开 API';
+  return `<aside class="post-evidence" aria-label="文章时效信息"><p><b>首次发布：</b>${esc(post.date??'unknown')}（由公开博客发布时间同步；未独立复核）。</p><p><b>来源更新：</b>${esc(sourceDate)}（博客记录时间；不以同步或站点部署日期冒充实质更新）。</p><p><b>安全审校：</b>来源站未声明独立审校记录；本站仅同步公开正文，未重新执行文中命令、模型调用或生产操作。</p><p><b>适用版本：</b>unknown（请以来源正文与当前上游文档为准）。</p><p>来源：${origin}；历史运行记录不代表当前重新实测。</p></aside>`;
+ }
  const maintenance=post.slug==='teledeck-one-session-one-runtime';
  const version=maintenance?'0.7.15（仅 2026-10-05 补记）；7 月历史版本以正文为准':'unknown（正文未明确可追溯版本号；请核对当前上游文档）';
  return `<aside class="post-evidence" aria-label="文章时效信息"><p><b>首次发布：</b>${esc(post.date??'unknown')}（保留归档原日期；原始发布平台时间未独立复核）。</p><p><b>实质更新：</b>${maintenance?'2026-10-05 维护补记；来源为正文同名章节，站内补记归档于 2026-10-06':'unknown（无明确实质更新记录；不以同步或站点部署日期冒充）'}。</p><p><b>安全审校：</b>2026-10-07，仅静态及离线检查，未执行付费模型或生产部署。</p><p><b>适用版本：</b>${esc(version)}。</p><p>来源：本站公开文章归档与正文；历史运行记录不代表当前重新实测。</p></aside>`;

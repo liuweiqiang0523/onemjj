@@ -25,6 +25,8 @@ export type Post = {
   readMinutes: number;
   content: string;
   origin?: string;
+  sourceUpdatedAt?: string;
+  syncManaged?: boolean;
 };
 export type Weekly = {
   sections?: { title: string; body: string }[];

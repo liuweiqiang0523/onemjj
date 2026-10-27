@@ -40,7 +40,7 @@ test('credential example rejects non-TTY and never follows redirects',()=>{
 });
 test('article safety corrections retain publication dates and label review boundaries',()=>{
  const posts=JSON.parse(readFileSync(new URL('../public/data/posts.json',import.meta.url),'utf8'));
- for(const p of posts) assert.ok(p.content.includes('2026-10-07'),p.slug);
+ for(const p of posts.filter((p:any)=>!p.syncManaged)) assert.ok(p.content.includes('2026-10-07'),p.slug);
  for(const slug of ['codex-app-provider-switching','hermes-multi-provider-routing']){
  const p=posts.find((p:any)=>p.slug===slug); assert.equal(p.date,'2026-07-24');
  assert.ok(!p.content.includes('Authorization: Bearer ***')); assert.ok(p.content.includes('Interactive TTY required'));
@@ -50,6 +50,12 @@ test('article safety corrections retain publication dates and label review bound
  assert.ok(!c.includes('chmod 600 ~/.codex/profiles/*')); assert.ok(c.includes('不提供可执行切换器'));
 });
 const data=JSON.parse(readFileSync(new URL('../src/default-data.json',import.meta.url),'utf8'));
+test('legacy blog link label migrates to the current blog identity',()=>{
+ const legacy=structuredClone(data);
+ legacy.heroLinks[0].label='个人博客 · 乱写のBlog ↗';
+ const migrated=refreshPublicContent(legacy);
+ assert.equal(migrated.heroLinks[0].label,'技术博客 · 天助自助者 ↗');
+});
 test('admin rejects malformed weekly structures without writing KV',async()=>{
  const payload=Buffer.from(JSON.stringify({username:'test',expires:Math.floor(Date.now()/1000)+60})).toString('base64url');
  const sig=createHmac('sha256','test-secret').update(payload).digest('base64url');

@@ -63,6 +63,11 @@ test('TeleDeck preserves historical figures and separates verified maintenance n
  assert.ok(html.includes('0.7.15'));
 });
 const posts = JSON.parse(read('public/data/posts.json'));
+test('every checked-in blog post has a canonical sitemap entry', () => {
+ const sitemap = read('public/sitemap.xml');
+ for (const post of posts) assert.ok(sitemap.includes(`https://onemjj.com/blog/${post.slug}/`), post.slug);
+ assert.ok(posts.some((post: any) => post.slug === 'cloudflare-tunnel-security-upgrade'));
+});
 async function page(path = '/') {
  const env = { ONEMJJ_CONFIG: { get: async () => JSON.stringify(data) }, ASSETS: { fetch: async (url: URL) => new Response(url.pathname === '/index.html' ? '<div id="app"></div>' : url.pathname === '/data/posts.json' ? JSON.stringify(posts) : JSON.stringify(data)) } };
  return onRequest({ request: new Request('https://onemjj.com' + path), env, next: async () => new Response('static') });

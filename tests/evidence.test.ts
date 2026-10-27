@@ -16,5 +16,9 @@ test('verification and feedback escape titles and distinguish read checks',()=>{
 test('publication evidence is explicit and TOC anchor labels are escaped',()=>{
  assert.match(renderPostEvidence({slug:'other',date:'2026-07-24'}),/首次发布.*2026-07-24/);
  assert.match(renderPostEvidence({slug:'other',date:'2026-07-24'}),/unknown/);
+ const synced=renderPostEvidence({slug:'synced',date:'2026-10-24',syncManaged:true,sourceUpdatedAt:'2026-10-24 13:08:32',origin:'https://blog.onemjj.com/posts/synced'});
+ assert.match(synced,/来源站未声明独立审校记录/);
+ assert.match(synced,/https:\/\/blog\.onemjj\.com\/posts\/synced/);
+ assert.doesNotMatch(synced,/2026-10-07/);
  assert.doesNotMatch(renderToc([{id:'a',text:'<img>',level:2},{id:'b',text:'b',level:2},{id:'c',text:'c',level:2}]),/<img>/);
 });

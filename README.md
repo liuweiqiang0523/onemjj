@@ -28,6 +28,8 @@ pnpm run build
 
 默认内容保存在 `src/default-data.json`，构建时同步发布到 `public/data/default-data.json`。线上后台保存的数据位于 Cloudflare KV 的 `siteData` 键，并优先于默认内容。`pnpm run build` 实际先运行 `scripts/sync-default-data.mjs`，只维护 src 单源，public 是生成镜像；API、SSR 与客户端使用共享 schema/fallback 与精确旧文案迁移，不写回 KV，未知自定义内容和旧刊日期保留。
 
+博客归档通过 `scripts/sync-blog-posts.mjs` 从公开博客 API 同步 `技术` 与 `工程笔记` 分类。脚本只追加缺失文章、刷新它自己管理的文章，并保留人工审校条目；远端不可用时不阻断构建。`pnpm run build` 会先执行同步，定时部署也会在不提交文章正文的情况下刷新静态归档与 sitemap。
+
 审校验证：`pnpm test`、`pnpm run typecheck`、`pnpm run test:browser`（需本地预览），以及 Python 3.11+ 的 `python3 scripts/verify-snippets.py`。后者只解析 shell/Python/TOML/JSON/YAML（YAML 使用 Ruby 标准库），凭据程序只离线测拒绝无 TTY 与 redirect，不运行 Docker/安装/模型请求。
 
 构建依赖通过 pnpm overrides 限定安全补丁 PostCSS 8.5.23、nanoid 3.3.18、source-map-js 1.2.2；升级需真实 install、audit 与全套回归，不使用盲目 audit fix。

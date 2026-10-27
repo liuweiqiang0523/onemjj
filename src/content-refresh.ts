@@ -13,6 +13,7 @@ export function refreshPublicContent<T extends Record<string, any>>(input: T): T
  for (const note of data.notes ?? []) for (const [old, value] of Object.entries(replacements)) note.body = note.body.replaceAll(old, value);
  for (const link of [...(data.heroLinks ?? []), ...(data.probe ? [data.probe] : [])]) {
   if (['乱写のBlog', '瞎记录のBlog'].includes(link.label)) link.label = '个人博客 · ' + link.label + ' ↗';
+  if (link.url === 'https://blog.onemjj.com' && link.label === '个人博客 · 乱写のBlog ↗') link.label = '技术博客 · 天助自助者 ↗';
   if (link.label === '没🐔の探针') link.label = '服务探针 · 没🐔の探针 ↗';
  }
  const commands = migrations.commands as Record<string, string>;

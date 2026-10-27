@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "node scripts/sync-default-data.mjs && vite build",
+    "sync:blog": "node scripts/sync-blog-posts.mjs",
+    "build": "node scripts/sync-blog-posts.mjs && node scripts/sync-default-data.mjs && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
