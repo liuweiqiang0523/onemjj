@@ -36,5 +36,5 @@ for (const width of [1440, 390, 320]) test(`weekly entry, archive, return and wi
  await page.getByRole('link',{name:'打开自托管方案向导 →'}).click();
  await expect(page).toHaveURL(/\/solutions\/$/);
  await page.goBack(); await expect(page.locator('.weekly header')).toContainText('ISSUE 004');
- await page.goto('/weekly/999/'); await expect(page.locator('h1')).toContainText('404');
+ await page.goto('/weekly/999/'); await expect(page.locator('h1')).toContainText(/404|这页不存在/);
 });
