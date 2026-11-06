@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { readFileSync } from 'node:fs';
 const guides: Record<string, { audience: string; workflow: string[]; reading: string[]; pitfalls: string[]; safety: string[]; maintainer: string }> = JSON.parse(readFileSync(new URL('../../src/tool-guides.json', import.meta.url), 'utf8'));
 for (const [id, guide] of Object.entries(guides)) test(`original guide survives SPA hydration: ${id}`, async ({ page }) => {

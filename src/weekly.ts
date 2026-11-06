@@ -1,5 +1,6 @@
 import legacy from './weekly-002.json';
 import latest from './weekly-003.json';
+import issue004 from './weekly-004.json';
 import type { SiteData, Weekly } from './data';
 
 /** Read-time promotion only: no KV writes, exact known editorial fields, admin 003 edits win. */
@@ -16,6 +17,21 @@ export function promoteWeekly<T extends Record<string, any>>(data: T): T {
    weeklyArchives: archives.some((a: Weekly) => a.issue === '002') ? archives : [...archives, { ...structuredClone(w), tools: structuredClone((data.tools ?? []).slice(0, 8)), notes: structuredClone(data.notes ?? []) }],
   });
  }
+ // Match the complete known 003 snapshot, including sections; unknown custom fields win.
+ const current = data.weekly;
+ const equal = (a: any, b: any): boolean => {
+  if (a === b) return true;
+  if (!a || !b || typeof a !== 'object' || typeof b !== 'object' || Array.isArray(a) !== Array.isArray(b)) return false;
+  const keys = Object.keys(a);
+  return keys.length === Object.keys(b).length && keys.every(k => Object.hasOwn(b, k) && equal(a[k], b[k]));
+ };
+ if (equal(current, latest)) {
+  const archives = data.weeklyArchives ?? [];
+  Object.assign(data, {
+   weekly: structuredClone(issue004),
+   weeklyArchives: archives.some((a: Weekly) => a.issue === '003') ? archives : [...archives, structuredClone(current)],
+  });
+ }
  return data;
 }
 
@@ -25,6 +41,7 @@ export function weeklyForPath(data: SiteData, path: string): Weekly | undefined 
  const currentPaper = current && !current.sections ? { ...current, tools: current.tools ?? data.tools.slice(0, 8), notes: current.notes ?? data.notes } : current;
  if (clean === '/weekly') return currentPaper;
  if (clean === '/weekly/002') return data.weeklyArchives?.find(w => w.issue === '002') ?? (current?.issue === '002' ? currentPaper : legacy);
+ if (clean === '/weekly/003') return data.weeklyArchives?.find(w => w.issue === '003') ?? (current?.issue === '003' ? currentPaper : latest);
  return undefined;
 }
 export const weeklyTitle = (w: Weekly) => `第${w.issue}期 · ${w.headlineTitle}｜OneMJJ 小报`;
@@ -32,7 +49,7 @@ const esc = (v: unknown) => String(v ?? '').replaceAll('&', '&amp;').replaceAll(
 export function renderWeeklyPaper(data: SiteData, path: string): string {
  const w = weeklyForPath(data, path);
  if (!w) return '<section class="empty glass"><h1>404 · 小报未找到</h1><a href="/weekly/" data-route>返回最新一期</a></section>';
- const archived = path.replace(/\/+$/, '') === '/weekly/002';
+ const archived = /^\/weekly\/(002|003)\/?$/.test(path);
  return `<section class="weekly">
  <header><div><span class="issue-label">ONE MJJ WEEKLY</span><h1>OneMJJ 小报</h1><p>工具、选型与低维护生存手册。</p></div><code>ISSUE ${esc(w.issue)}<br/><time datetime="${esc(w.date)}">${esc(w.date.replaceAll('-', '.'))}</time></code></header>
  ${w.archiveNotice ? `<p class="archive-notice">${esc(w.archiveNotice)}${w.updated ? ` 本次仅修正文案；最后更新：${esc(w.updated)}，未重新实测历史优惠或服务状态。` : ''}</p>` : `<p>本期发布：${esc(w.date)} · 实用选型与验收，不提供实时优惠或行情。</p>`}
@@ -40,6 +57,7 @@ export function renderWeeklyPaper(data: SiteData, path: string): string {
  ${w.sections ? `<div class="notes">${w.sections.map(s => `<article class="note-card"><h2>${esc(s.title)}</h2>${s.body.split('\n').filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('')}</article>`).join('')}</div><p><a href="/solutions/" data-route>打开自托管方案向导 →</a></p>` : ''}
  ${w.tools ? `<div class="grid tools-grid paper">${w.tools.map(t => `<a class="tool-card" href="/tools/${encodeURIComponent(t.id)}/" data-route><span class="tool-icon">${esc(t.icon)}</span><span class="tool-name">${esc(t.name)}</span><small>${esc(t.desc)}</small>${t.badge ? `<em>${esc(t.badge)}</em>` : ''}</a>`).join('')}</div>` : ''}
  ${w.notes ? `<div class="notes">${w.notes.map(n => `<details class="note-card"><summary><span>${esc(n.tag)}</span><h3>${esc(n.title)}</h3></summary><div class="note-body">${n.body.split('\n').map(p => p.trim()).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('')}</div></details>`).join('')}</div>` : ''}
- <nav aria-label="小报归档">${archived ? '<a href="/weekly/" data-route>返回最新一期 →</a>' : '<a href="/weekly/002/" data-route>第002期归档 · 2026-08-06 →</a>'} · <a href="/" data-route>返回首页</a></nav>
+ ${w.links ? `<p>${w.links.map(l => `<a href="${esc(l.url)}"${l.url.startsWith('/') ? ' data-route' : ' target="_blank" rel="noopener noreferrer"'}>${esc(l.label)}</a>`).join(' · ')}</p>` : ''}
+ <nav aria-label="小报归档">${archived ? '<a href="/weekly/" data-route>返回最新一期 →</a>' : '<a href="/weekly/003/" data-route>第003期归档 · 2026-10-07 →</a> · <a href="/weekly/002/" data-route>第002期归档 · 2026-08-06 →</a>'} · <a href="/" data-route>返回首页</a></nav>
  </section>`;
 }

@@ -51,6 +51,7 @@ function validWeekly(w: any): boolean {
  if (!validString(w.issue,8) || !/^\d{3,8}$/.test(w.issue) || !validDate(w.date)) return false;
  if (!validString(w.headlineTag,160) || !validString(w.headlineTitle,300) || !validString(w.headlineBody,10000)) return false;
  if (w.updated !== undefined && !validDate(w.updated)) return false;
+ if (w.links !== undefined && (!Array.isArray(w.links) || w.links.length > 20 || !w.links.every((l: any) => validString(l?.label,160) && (validUrl(l?.url) || (typeof l?.url === 'string' && /^\/(?!\/)[a-z0-9/-]+\/$/i.test(l.url)))))) return false;
  if (w.archiveNotice !== undefined && !validString(w.archiveNotice,3000)) return false;
  if (w.sections !== undefined && (!Array.isArray(w.sections) || w.sections.length > 40 || !w.sections.every((s: any) => validString(s?.title,300) && validString(s?.body,10000)))) return false;
  if ((w.tools !== undefined && !Array.isArray(w.tools)) || (w.notes !== undefined && !Array.isArray(w.notes))) return false;

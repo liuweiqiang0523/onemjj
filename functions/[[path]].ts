@@ -34,6 +34,8 @@ const SPA_ROUTES = new Set([
   '/weekly/',
   '/weekly/002',
   '/weekly/002/',
+  '/weekly/003',
+  '/weekly/003/',
   '/blog',
   '/blog/',
   '/privacy',

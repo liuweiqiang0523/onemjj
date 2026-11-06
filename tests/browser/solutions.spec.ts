@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures';
 import {mkdirSync} from 'node:fs';
 const shots=process.env.SOLUTIONS_SCREENSHOT_DIR || 'test-results/solutions-screenshots';
 for(const width of [1440,390,320]) test(`solution cards, history and real share clipboard at ${width}`,async({page,context,baseURL})=>{

@@ -29,6 +29,7 @@ export type Post = {
   syncManaged?: boolean;
 };
 export type Weekly = {
+  links?: Link[];
   sections?: { title: string; body: string }[];
   tools?: Tool[];
   notes?: Note[];

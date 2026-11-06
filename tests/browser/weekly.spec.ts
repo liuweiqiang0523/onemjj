@@ -1,14 +1,25 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { readFileSync } from 'node:fs';
 const legacy = JSON.parse(readFileSync(new URL('../../src/weekly-002.json', import.meta.url), 'utf8'));
 for (const width of [1440, 390, 320]) test(`weekly entry, archive, return and wizard at ${width}px`, async ({ page }) => {
  await page.setViewportSize({width,height:900});
  await page.goto('/');
  await page.getByRole('link',{name:'小报',exact:true}).click();
+ await expect(page.locator('.weekly header')).toContainText('ISSUE 004');
+ await expect(page.locator('time')).toHaveAttribute('datetime','2026-11-06');
+ await expect(page.locator('.weekly')).toContainText('共享记忆');
+ expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+ await page.getByRole('link',{name:'站内阅读：Codex 与 Hermes 共享本地记忆 →'}).click();
+ await expect(page).toHaveURL(/\/blog\/codex-hermes-shared-memory\/$/);
+ await expect(page.locator('h1')).toContainText('Codex 与 Hermes 共用记忆');
+ await page.goBack();
+ await expect(page.locator('.weekly header')).toContainText('ISSUE 004');
+ await page.getByRole('link',{name:'第003期归档 · 2026-10-07 →'}).click();
  await expect(page.locator('.weekly header')).toContainText('ISSUE 003');
  await expect(page.locator('time')).toHaveAttribute('datetime','2026-10-07');
  await expect(page.locator('.weekly')).toContainText('CGNAT');
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+ await page.getByRole('link',{name:'返回最新一期 →'}).click();
  await page.getByRole('link',{name:'第002期归档 · 2026-08-06 →'}).click();
  await expect(page).toHaveURL(/\/weekly\/002\/$/);
  await expect(page).toHaveTitle(/第002期/);
@@ -21,9 +32,9 @@ for (const width of [1440, 390, 320]) test(`weekly entry, archive, return and wi
  }
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
  await page.getByRole('link',{name:'返回最新一期 →'}).click();
- await expect(page.locator('.weekly header')).toContainText('ISSUE 003');
+ await expect(page.locator('.weekly header')).toContainText('ISSUE 004');
  await page.getByRole('link',{name:'打开自托管方案向导 →'}).click();
  await expect(page).toHaveURL(/\/solutions\/$/);
- await page.goBack(); await expect(page.locator('.weekly header')).toContainText('ISSUE 003');
+ await page.goBack(); await expect(page.locator('.weekly header')).toContainText('ISSUE 004');
  await page.goto('/weekly/999/'); await expect(page.locator('h1')).toContainText('404');
 });

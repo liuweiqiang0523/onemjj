@@ -11,16 +11,16 @@ import { onRequestGet } from '../functions/api/data.ts';
 test('latest and archived SSR, API and whitelist preserve issue-specific content', async () => {
  const env = { ONEMJJ_CONFIG: { get: async () => JSON.stringify(snapshot) }, ASSETS: { fetch: async (url: URL) => new Response(url.pathname === '/index.html' ? '<title>site</title><link rel="canonical" href="https://onemjj.com/"><div id="app"></div>' : '[]') } };
  const api = await (await onRequestGet({env, request: new Request('https://onemjj.com/api/data')})).json();
- assert.equal(api.weekly.issue, '003');
- for (const [path, issue] of [['/weekly/', '003'], ['/weekly/002/', '002'], ['/weekly/002', '002']]) {
+ assert.equal(api.weekly.issue, '004');
+ for (const [path, issue] of [['/weekly/', '004'], ['/weekly/003/', '003'], ['/weekly/002/', '002'], ['/weekly/002', '002']]) {
   const r = await onRequest({env, request: new Request('https://onemjj.com'+path), next: async () => new Response('static')});
   assert.equal(r.status, 200);
   const html = await r.text(); assert.ok(html.includes('ISSUE '+issue));
   assert.ok(html.includes('https://onemjj.com'+path.replace(/\/+$/, '')+'/'));
   if (issue === '002') { assert.ok(html.includes(original.headlineBody)); for (const n of notes) assert.ok(html.includes(n.title)); assert.ok(html.includes('2026-08-06')); }
-  else { assert.ok(html.includes('/solutions/')); assert.ok(html.includes('CGNAT')); assert.ok(!html.includes('2026-08-31')); }
+  else { assert.ok(html.includes('/solutions/')); assert.ok(html.includes(issue === '003' ? 'CGNAT' : '共享记忆')); assert.ok(!html.includes('2026-08-31')); }
  }
- for (const path of ['/weekly/999/', '/weekly/003/', '/weekly/002/extra/']) assert.equal((await onRequest({env, request:new Request('https://onemjj.com'+path), next:async()=>new Response('static')})).status,404);
+ for (const path of ['/weekly/999/', '/weekly/002/extra/']) assert.equal((await onRequest({env, request:new Request('https://onemjj.com'+path), next:async()=>new Response('static')})).status,404);
 });
 
 test('authenticated admin JSON save retains editable latest sections and archived snapshot', async () => {
@@ -42,8 +42,8 @@ const { tools, notes, ...original } = archive;
 const snapshot = { ...structuredClone(data), weekly: original, tools: [...tools, ...data.tools.slice(8)], notes, weeklyArchives: [] };
 test('known KV 002 promotes once, snapshots full original issue and leaves unrelated data alone', () => {
  const updated = refreshPublicContent(snapshot);
- assert.equal(updated.weekly.issue, '003');
- assert.equal(updated.weekly.date, '2026-10-07');
+ assert.equal(updated.weekly.issue, '004');
+ assert.equal(updated.weekly.date, '2026-11-06');
  assert.deepEqual(updated.weeklyArchives[0], { ...original, tools: snapshot.tools.slice(0, 8), notes: snapshot.notes });
  for (const key of ['tools', 'scripts', 'notes', 'heroLinks']) assert.deepEqual(updated[key], snapshot[key]);
  assert.deepEqual(refreshPublicContent(updated), updated);

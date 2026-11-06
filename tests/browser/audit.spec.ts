@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures';
 import {readFileSync} from 'node:fs';
 const data=JSON.parse(readFileSync(new URL('../../src/default-data.json',import.meta.url),'utf8'));
 const posts=JSON.parse(readFileSync(new URL('../../public/data/posts.json',import.meta.url),'utf8'));
@@ -27,7 +27,7 @@ test('all article code blocks preserve every copied character on mobile',async({
 });
 test('client rejects corrupt API data and migrates known old KV commands',async({page})=>{
  await page.route('**/api/data',route=>route.fulfill({json:{...data,weekly:{...data.weekly,date:42}}}));
- await page.goto('/weekly/');await expect(page.locator('.weekly header')).toContainText('ISSUE 003');
+ await page.goto('/weekly/');await expect(page.locator('.weekly header')).toContainText('ISSUE 004');
  const old=structuredClone(data);old.tools[4].commands[1]='docker compose logs --tail=80 <service>';old.tools[4].commands.push('echo custom');
  await page.unroute('**/api/data');await page.route('**/api/data',route=>route.fulfill({json:old}));
  await page.goto('/tools/media/');
