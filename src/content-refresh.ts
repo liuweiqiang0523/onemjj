@@ -10,7 +10,7 @@ export function refreshPublicContent<T extends Record<string, any>>(input: T): T
   if (ai.body === '放中转、模型可用性、Codex/Claude/Gemini 相关工具。') ai.body = '公开模型目录、效果参考和代码助手入口。模型列表可见不代表请求可用。OpenAI 模型列表需要鉴权；下方 Python 3 示例以隐藏输入读取密钥，不把密钥写进命令历史或进程参数，不打印密钥，也不启用调试日志。仅向官方 HTTPS 地址发送，运行前确认环境、账户权限和费用。';
   // Credential commands are migrated by the shared exact-match table below.
  }
- for (const note of data.notes ?? []) for (const [old, value] of Object.entries(replacements)) note.body = note.body.replaceAll(old, value);
+ for (const note of [...(data.notes ?? []), ...(data.weeklyArchives ?? []).flatMap((w: any) => w.notes ?? []), ...(data.weekly?.notes ?? [])]) for (const [old, value] of Object.entries(replacements)) note.body = note.body.replaceAll(old, value);
  for (const link of [...(data.heroLinks ?? []), ...(data.probe ? [data.probe] : [])]) {
   if (['乱写のBlog', '瞎记录のBlog'].includes(link.label)) link.label = '个人博客 · ' + link.label + ' ↗';
   if (link.url === 'https://blog.onemjj.com' && link.label === '个人博客 · 乱写のBlog ↗') link.label = '技术博客 · 天助自助者 ↗';
